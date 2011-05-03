@@ -114,12 +114,11 @@ env(Sector, X, Y, Obj) :-
     integer(Y), env(Sector, X, Y1-Y2, Obj), between(Y1,Y2, Y).
 
 
-
-full_env(Sector) :-
+check_env_is_complete(Sector) :-
     env(Sector, bbox, MX, MY),
     forall((between(0,MX, X), between(0,MY, Y)),  env(Sector, X, Y, _)).
     
-missing_in_env(Sector, X, Y) :-
+check_missing_in_env(Sector, X, Y) :-
     env(Sector, bbox, MX, MY),
     between(0,MX, X), between(0,MY, Y),
     \+ env(Sector, X, Y, _).
