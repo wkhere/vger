@@ -128,6 +128,8 @@ gen_env(Sector, X, Y, E) :-
     between(0,MX, X), between(0,MY, Y),  env(Sector, X, Y, E).
 
 
+nb(Sector, X, Y, _) :-
+    env(Sector, X, Y, block), !, fail.
 nb(Sector, X, Y, Nb) :-
     X1 is X-1, Y1 is Y-1, env(Sector,X1,Y1,E), E\=block, Nb=nb(nw,X1,Y1,E).
 nb(Sector, X, Y, Nb) :-
