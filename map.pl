@@ -123,3 +123,22 @@ missing_in_env(Sector, X, Y) :-
     env(Sector, bbox, MX, MY),
     between(0,MX, X), between(0,MY, Y),
     \+ env(Sector, X, Y, _).
+
+
+
+nb(Sector, X, Y, Nb) :-
+    X1 is X-1, Y1 is Y-1, env(Sector,X1,Y1,E), E\=block, Nb=nb(nw,X1,Y1,E).
+nb(Sector, X, Y, Nb) :-
+    Y1 is Y-1, env(Sector,X,Y1,E), E\=block, Nb=nb(n,X,Y1,E).
+nb(Sector, X, Y, Nb) :-
+    X1 is X+1, Y1 is Y-1, env(Sector,X1,Y1,E), E\=block, Nb=nb(ne,X1,Y1,E).
+nb(Sector, X, Y, Nb) :-
+    X1 is X+1, env(Sector,X1,Y,E), E\=block, Nb=nb(e,X1,Y,E).
+nb(Sector, X, Y, Nb) :-
+    X1 is X+1, Y1 is Y+1, env(Sector,X1,Y1,E), E\=block, Nb=nb(se,X1,Y1,E).
+nb(Sector, X, Y, Nb) :-
+    Y1 is Y+1, env(Sector,X,Y1,E), E\=block, Nb=nb(s,X,Y1,E).
+nb(Sector, X, Y, Nb) :-
+    X1 is X-1, Y1 is Y+1, env(Sector,X1,Y1,E), E\=block, Nb=nb(sw,X1,Y1,E).
+nb(Sector, X, Y, Nb) :-
+    X1 is X-1, env(Sector,X1,Y,E), E\=block, Nb=nb(w,X1,Y,E).
