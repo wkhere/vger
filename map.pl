@@ -11,6 +11,7 @@ env_types(Es) :- findall(Env, mvcost(Env,_), Es).
 
 mvcost(Env, DriveSpeed, X) :- mvcost(Env, C), X is C-DriveSpeed.
 
+env(enioar, bbox, 20, 12) :- !.
 env(enioar,  8,     0,     wormhole(unused)).
 env(enioar,  7-9,   0-1,   energy).
 env(enioar,  8,     2,     energy).
@@ -71,7 +72,6 @@ env(enioar,  13,    8-12,  energy).
 env(enioar,  11-12, 11,    space).
 env(enioar,  10-13, 12,    energy).
 env(enioar,  12,    12,    wormhole(to('Liaface',9,0))).
-env(enioar, bbox, 20, 12).
 env(enioar,  0-6,   0,     block).
 env(enioar,  0,     1,     block).
 env(enioar,  4-6,   0-1,   block).
@@ -103,12 +103,10 @@ env(enioar,  14,    12,    block).
 
 %% final env catchers
 
-env(_Sector, X, Y, block) :-
-    integer(X), integer(Y), 
-    (X < 0; Y < 0), !.
 env(Sector,  X, Y, block) :-
     integer(X), integer(Y),
-    env(Sector, bbox, MX, MY), (X > MX; Y > MY), !.
+    ( X < 0; Y < 0;
+      (env(Sector, bbox, MX, MY), (X > MX; Y > MY)) ), !.
 
 env(Sector, X, Y, Obj) :-
     integer(X), env(Sector, X1-X2, Y, Obj), between(X1,X2, X), !.
@@ -123,5 +121,5 @@ full_env(Sector) :-
     
 missing_in_env(Sector, X, Y) :-
     env(Sector, bbox, MX, MY),
-    (between(0,MX, X), between(0,MY, Y)),
+    between(0,MX, X), between(0,MY, Y),
     \+ env(Sector, X, Y, _).
