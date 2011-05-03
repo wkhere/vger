@@ -123,6 +123,9 @@ check_missing_in_env(Sector, X, Y) :-
     between(0,MX, X), between(0,MY, Y),
     \+ env(Sector, X, Y, _).
 
+gen_env(Sector, X, Y, E) :-
+    env(Sector, bbox, MX, MY),
+    between(0,MX, X), between(0,MY, Y),  env(Sector, X, Y, E).
 
 
 nb(Sector, X, Y, Nb) :-
