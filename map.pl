@@ -209,24 +209,24 @@ astar_(Conf,  OpenQ, OpenS, Closed, Parents,  Sol) :-
     ;
       put_assoc(Node, Closed, true,  Closed1),
       Node = coord(Sector,X,Y),
-      findall(coord(Sector,X1,Y1),
-          (nb(Sector,X,Y, nb(_,X1,Y1,E)), env_base(E)),  Nbs),
+      Conf = conf(Drive, _, _),
+      env(Sector,X,Y, E), mvcost(E, Drive, C),
+      findall((coord(S1,X1,Y1),C),
+          nb(Sector,X,Y, nb(_,S1,X1,Y1,_)),
+          Nbs),
       astar_pass(Conf,  Nbs, Node, GScore,
                         OpenQ1, OpenS1, Closed1, Parents,  Sol)).
 
 astar_pass(Conf,  [], _, _, OpenQ, OpenS, Closed, Parents,  Sol) :-
     astar_(Conf,  OpenQ, OpenS, Closed, Parents,  Sol).
 
-astar_pass(Conf,  [Nb|Nbs], Node, GScore,
+astar_pass(Conf,  [(Nb,_C)|Nbs], Node, GScore,
                   OpenQ, OpenS, Closed, Parents,  Sol) :-
     get_assoc(Nb, Closed, _), !,
     astar_pass(Conf,  Nbs, Node, GScore, OpenQ, OpenS, Closed, Parents,  Sol).
 
-astar_pass(Conf,  [Nb|Nbs], Node, GScore,
+astar_pass(Conf,  [(Nb,C)|Nbs], Node, GScore,
                   OpenQ, OpenS, Closed, Parents,  Sol) :-
-    Conf = conf(Drive, _, _),
-    Node = coord(Sector,X,Y),
-    env(Sector,X,Y, E), mvcost(E, Drive, C),
     EstimateG is GScore + C,
 
     ( get_assoc(Nb, OpenS, NbGScore) ->
