@@ -146,3 +146,9 @@ nb(Sector, X, Y, Nb) :-
     X1 is X-1, Y1 is Y+1, env(Sector,X1,Y1,E), E\=block, Nb=nb(sw,X1,Y1,E).
 nb(Sector, X, Y, Nb) :-
     X1 is X-1, env(Sector,X1,Y,E), E\=block, Nb=nb(w,X1,Y,E).
+
+check_nb_not_reflexive(Sector, bad(X,Y,X1,Y1)) :-
+    env(Sector, bbox, MX, MY),
+    between(0,MX, X), between(0,MY, Y),
+    \+ (nb(S,X,Y,nb(_,X1,Y1,_)) -> nb(S,X1,Y1,nb(_,X,Y,_)); true).
+
