@@ -198,7 +198,7 @@ check_nb_not_reflexive(Sector, bad(X,Y,X1,Y1)) :-
 
 %% A*
 
-h(coord(S,X0,Y0), coord(S,X,Y),  H) :- H is floor(sqrt((X-X0)^2 + (Y-Y0)^2)).
+h(pos(S,X0,Y0), pos(S,X,Y),  H) :- H is floor(sqrt((X-X0)^2 + (Y-Y0)^2)).
 h(Drive, N1, N2,  H) :-
     h(N1,N2, H0), mvcost(space,Drive, LowestCost),
     H is H0*LowestCost.
@@ -208,6 +208,8 @@ goal_code(Goal, Node,  Code) :- ( Goal=Node -> Code=0 ; Code=1 ).
 
 astar(Conf,  Sol) :-
     Conf = conf(Drive, Node0, Goal),
+    Node0 = pos(_Sector0,X0,Y0), integer(X0), integer(Y0),
+    Goal =  pos(_Sector1,X1,Y1), integer(X1), integer(Y1),
 
     empty_assoc(Parents),
     empty_assoc(Closed),
@@ -229,10 +231,10 @@ astar_(Conf,  OpenQ, OpenS, Closed, Parents,  Sol) :-
         astar_res(Parents, Node, [],  Sol)
     ;
       put_assoc(Node, Closed, true,  Closed1),
-      Node = coord(Sector,X,Y),
+      Node = pos(Sector,X,Y),
       Conf = conf(Drive, _, _),
       env(Sector,X,Y, E), mvcost(E, Drive, C),
-      findall((coord(S1,X1,Y1),C),
+      findall((pos(S1,X1,Y1),C),
           nb(Sector,X,Y, nb(_,S1,X1,Y1,_)),
           Nbs),
       astar_pass(Conf,  Nbs, Node, GScore,
