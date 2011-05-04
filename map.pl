@@ -5,6 +5,9 @@
 cache(P) :- asserta((P :- !)).
 cache_once(P) :- (P -> true; cache(P)).
 
+%% todo: whcost should be settable per-user session
+whcost(20).
+
 mvcost(space,    C) :- C=11.
 mvcost(nebula,   C) :- C=16.
 mvcost(viral,    C) :- C=18.
@@ -68,7 +71,7 @@ env(enioar,  17,    6-9,   energy).
 env(enioar,  17-20, 7,     energy).
 env(enioar,  18,    7,     choke(to(19-20,6-8))).
 env(enioar,  19-20, 6-8,   energy).
-env(enioar,  20,    7,     wormhole(to('Pass Fed-09',0,7))).
+env(enioar,  20,    7,     wormhole(to(pf09, 0,7))).
 env(enioar,  2,     8-12,  energy).
 env(enioar,  2-3,   8,     energy).
 env(enioar,  5,     8-9,   space).
@@ -91,7 +94,7 @@ env(enioar,  13-14, 9-11,  energy).
 env(enioar,  13,    8-12,  energy).
 env(enioar,  11-12, 11,    space).
 env(enioar,  10-13, 12,    energy).
-env(enioar,  12,    12,    wormhole(to('Liaface',9,0))).
+env(enioar,  12,    12,    wormhole(to(liaface, 9,0))).
 env(enioar,  0-6,   0,     block).
 env(enioar,  0,     1,     block).
 env(enioar,  4-6,   0-1,   block).
@@ -120,6 +123,13 @@ env(enioar,  15-20, 10-12, block).
 env(enioar,  14,    12,    block).
 %% enioar done.
 
+env(pf09, bbox, 2, 8).
+env(pf09,    0-1,   6-8,   energy).
+env(pf09, 0, 7, wormhole(to(enioar,20,7))).
+env(pf09,      2,     7,   energy).
+env(pf09,    0-2,   0-5,   block).
+env(pf09,      2,     6,   block).
+env(pf09,      2,     8,   block).
 
 %% final env catchers
 
@@ -152,22 +162,33 @@ gen_env(Sector, X, Y, E) :-
 nb(Sector, X, Y, _) :-
     env(Sector, X, Y, block), !, fail.
 nb(Sector, X, Y, Nb) :-
-    X1 is X-1, Y1 is Y-1, env(Sector,X1,Y1,E), E\=block, Nb=nb(nw,X1,Y1,E).
-%% ^^ or should i check env_base(E), here and below
+    X1 is X-1, Y1 is Y-1, env(Sector,X1,Y1,E), env_base(E),
+    %% ^^ or should i check env_base(E), here and below
+    Nb=nb(nw, Sector,X1,Y1, E).
 nb(Sector, X, Y, Nb) :-
-    Y1 is Y-1, env(Sector,X,Y1,E), E\=block, Nb=nb(n,X,Y1,E).
+    Y1 is Y-1, env(Sector,X,Y1,E), env_base(E),
+    Nb=nb(n, Sector,X,Y1, E).
 nb(Sector, X, Y, Nb) :-
-    X1 is X+1, Y1 is Y-1, env(Sector,X1,Y1,E), E\=block, Nb=nb(ne,X1,Y1,E).
+    X1 is X+1, Y1 is Y-1, env(Sector,X1,Y1,E), env_base(E),
+    Nb=nb(ne, Sector,X1,Y1, E).
 nb(Sector, X, Y, Nb) :-
-    X1 is X+1, env(Sector,X1,Y,E), E\=block, Nb=nb(e,X1,Y,E).
+    X1 is X+1, env(Sector,X1,Y,E), env_base(E),
+    Nb=nb(e, Sector,X1,Y, E).
 nb(Sector, X, Y, Nb) :-
-    X1 is X+1, Y1 is Y+1, env(Sector,X1,Y1,E), E\=block, Nb=nb(se,X1,Y1,E).
+    X1 is X+1, Y1 is Y+1, env(Sector,X1,Y1,E), env_base(E),
+    Nb=nb(se, Sector,X1,Y1, E).
 nb(Sector, X, Y, Nb) :-
-    Y1 is Y+1, env(Sector,X,Y1,E), E\=block, Nb=nb(s,X,Y1,E).
+    Y1 is Y+1, env(Sector,X,Y1,E), env_base(E),
+    Nb=nb(s, Sector,X,Y1, E).
 nb(Sector, X, Y, Nb) :-
-    X1 is X-1, Y1 is Y+1, env(Sector,X1,Y1,E), E\=block, Nb=nb(sw,X1,Y1,E).
+    X1 is X-1, Y1 is Y+1, env(Sector,X1,Y1,E), env_base(E),
+    Nb=nb(sw, Sector,X1,Y1, E).
 nb(Sector, X, Y, Nb) :-
-    X1 is X-1, env(Sector,X1,Y,E), E\=block, Nb=nb(w,X1,Y,E).
+    X1 is X-1, env(Sector,X1,Y,E), env_base(E),
+    Nb=nb(w, Sector,X1,Y, E).
+%%nb(Sector, X, Y, Nb) :-
+%%    env(Sector,X,Y, wormhole(to(Sector2,X2,Y2))), 
+%%    Nb=nb(wh, Sector2,X2,Y2, undef).
 
 check_nb_not_reflexive(Sector, bad(X,Y,X1,Y1)) :-
     env(Sector, bbox, MX, MY),
@@ -181,7 +202,7 @@ h(coord(S,X0,Y0), coord(S,X,Y),  H) :- H is floor(sqrt((X-X0)^2 + (Y-Y0)^2)).
 h(Drive, N1, N2,  H) :-
     h(N1,N2, H0), mvcost(space,Drive, LowestCost),
     H is H0*LowestCost.
-
+%% I need reasonable H metrics between sectors to be able to go through them!
 
 goal_code(Goal, Node,  Code) :- ( Goal=Node -> Code=0 ; Code=1 ).
 
