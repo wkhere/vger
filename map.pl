@@ -7,9 +7,21 @@ mvcost(energy,   C) :- C=20.
 mvcost(asteroid, C) :- C=25.
 mvcost(exotic,   C) :- C=36.
 
-env_types(Es) :- findall(Env, mvcost(Env,_), Es).
+env_base(Env) :- mvcost(Env,_).
 
-mvcost(Env, DriveSpeed, X) :- mvcost(Env, C), X is C-DriveSpeed.
+mvcost(Env, Drive, X) :- mvcost(Env,C), speed(Drive,Speed), X is C-Speed.
+
+speed(DriveSpeed, S) :- integer(DriveSpeed), !, S=DriveSpeed.
+speed(nuclear, S) :- S=1.
+speed(fusion,  S) :- S=2.
+speed(efusion, S)   :- S=2.
+speed(ion, S) :- S=3.
+speed(am, S)  :- S=4.
+speed(eam, S) :- S=4.
+speed(hyper, S) :- S=5.
+speed(ip, S)  :- S=6.
+speed(eip, S) :- S=6.
+
 
 env(enioar, bbox, 20, 12) :- !.
 env(enioar,  8,     0,     wormhole(unused)).
@@ -132,6 +144,7 @@ nb(Sector, X, Y, _) :-
     env(Sector, X, Y, block), !, fail.
 nb(Sector, X, Y, Nb) :-
     X1 is X-1, Y1 is Y-1, env(Sector,X1,Y1,E), E\=block, Nb=nb(nw,X1,Y1,E).
+%% ^^ or should i check env_base(E), here and below
 nb(Sector, X, Y, Nb) :-
     Y1 is Y-1, env(Sector,X,Y1,E), E\=block, Nb=nb(n,X,Y1,E).
 nb(Sector, X, Y, Nb) :-
