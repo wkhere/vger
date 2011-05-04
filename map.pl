@@ -30,8 +30,8 @@ speed(eip, S) :- S=6.
 env(S, X, Y, V) :- env_(S, X, Y, V).
 
 env(enioar, bbox, 20, 12) :- !.
-env(enioar,  8,     0,     wormhole(unused)).
 env(enioar,  7-9,   0-1,   energy).
+env(enioar,  8,     0,     wormhole(unused)).
 env(enioar,  8,     2,     energy).
 env(enioar,  8,     2,     choke(to(7-9,0-1))).
 env(enioar,  1,     1-5,   energy).
