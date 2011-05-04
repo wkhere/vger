@@ -1,5 +1,8 @@
 %%-*-prolog-*-
 
+cache(P) :- asserta((P :- !)).
+cache_once(P) :- (P -> true; cache(P)).
+
 mvcost(space,    C) :- C=11.
 mvcost(nebula,   C) :- C=16.
 mvcost(viral,    C) :- C=18.
@@ -22,6 +25,9 @@ speed(hyper, S) :- S=5.
 speed(ip, S)  :- S=6.
 speed(eip, S) :- S=6.
 
+
+:- dynamic env_/4.
+env(S, X, Y, V) :- env_(S, X, Y, V).
 
 env(enioar, bbox, 20, 12) :- !.
 env(enioar,  8,     0,     wormhole(unused)).
@@ -137,7 +143,8 @@ check_missing_in_env(Sector, X, Y) :-
 
 gen_env(Sector, X, Y, E) :-
     env(Sector, bbox, MX, MY),
-    between(0,MX, X), between(0,MY, Y),  env(Sector, X, Y, E).
+    between(0,MX, X), between(0,MY, Y),  env(Sector, X, Y, E),
+    cache_once(env_(Sector, X, Y, E)).
 
 
 nb(Sector, X, Y, _) :-
