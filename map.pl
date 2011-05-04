@@ -1,4 +1,6 @@
 %%-*-prolog-*-
+:- use_module(library(assoc)).
+:- use_module(library(heaps)).
 
 cache(P) :- asserta((P :- !)).
 cache_once(P) :- (P -> true; cache(P)).
@@ -172,3 +174,87 @@ check_nb_not_reflexive(Sector, bad(X,Y,X1,Y1)) :-
     between(0,MX, X), between(0,MY, Y),
     \+ (nb(S,X,Y,nb(_,X1,Y1,_)) -> nb(S,X1,Y1,nb(_,X,Y,_)); true).
 
+
+%% A*
+
+h(node(X0,Y0), node(X,Y),  H) :- H is floor(sqrt((X-X0)^2 + (Y-Y0)^2)).
+h(Drive, N1, N2,  H) :-
+    h(N1,N2, H0), mvcost(space,Drive, LowestCost),
+    H is H0*LowestCost.
+
+
+goal_code(Goal, Node,  Code) :- ( Goal=Node -> Code=0 ; Code=1 ).
+
+astar(Conf,  Sol) :-
+    Conf = conf(Drive, _Sector, Node0, Goal),
+
+    empty_assoc(Parents),
+    empty_assoc(Closed),
+    list_to_assoc([Node0-0], OpenS),
+
+    h(Drive, Node0, Goal,  H0),
+    goal_code(Goal, Node0, GC0),
+    %% singleton_heap() has args backwards! bug in swi doc+impl
+    empty_heap(O0), add_to_heap(O0, (H0,GC0), Node0, OpenQ),
+
+    astar_(Conf,  OpenQ, OpenS, Closed, Parents,  Sol).
+
+astar_(_, OpenQ, _, _, _,  []) :- empty_heap(OpenQ), !.
+
+astar_(Conf,  OpenQ, OpenS, Closed, Parents,  Sol) :-
+    get_from_heap(OpenQ, (_FScore,GC), Node,  OpenQ1),
+    del_assoc(Node, OpenS, GScore,  OpenS1),
+    ( GC = 0 ->
+        astar_res(Parents, Node, [],  Sol)
+    ;
+      put_assoc(Node, Closed, true,  Closed1),
+      Conf = conf(_,Sector,_,_),
+      Node = node(X,Y),
+      findall(node(X1,Y1),
+          (nb(Sector, X,Y, nb(_,X1,Y1,E)), env_base(E)),  Nbs),
+      astar_pass(Conf,  Nbs, Node, GScore,
+                        OpenQ1, OpenS1, Closed1, Parents,  Sol)).
+
+astar_pass(Conf,  [], _, _, OpenQ, OpenS, Closed, Parents,  Sol) :-
+    astar_(Conf,  OpenQ, OpenS, Closed, Parents,  Sol).
+
+astar_pass(Conf,  [Nb|Nbs], Node, GScore,
+                  OpenQ, OpenS, Closed, Parents,  Sol) :-
+    get_assoc(Nb, Closed, _), !,
+    astar_pass(Conf,  Nbs, Node, GScore, OpenQ, OpenS, Closed, Parents,  Sol).
+
+astar_pass(Conf,  [Nb|Nbs], Node, GScore,
+                  OpenQ, OpenS, Closed, Parents,  Sol) :-
+    Conf = conf(Drive, Sector, _, _),
+    Node = node(X,Y),
+    env(Sector, X,Y, E), mvcost(E, Drive, C),
+    EstimateG is GScore + C,
+
+    ( get_assoc(Nb, OpenS, NbGScore) ->
+        ( EstimateG < NbGScore ->
+            delete_from_heap(OpenQ, _, Nb,  OpenQ1),
+            astar_upd(Conf,  EstimateG, [Nb|Nbs], Node, GScore,
+                             OpenQ1, OpenS, Closed, Parents,  Sol)
+        ;  astar_pass(Conf,  Nbs, Node, GScore,
+                             OpenQ, OpenS, Closed, Parents,  Sol) )
+    ; % add Nb to OpenQ & recalc Nb's GScore
+      astar_upd(Conf,  EstimateG, [Nb|Nbs], Node, GScore,
+                       OpenQ, OpenS, Closed, Parents,  Sol) ).
+
+astar_upd(Conf,  NewGScore, [Nb|Nbs], Node, GScore,
+                 OpenQ, OpenS, Closed, Parents,  Sol) :-
+    Conf = conf(Drive, _, _, Goal),
+    put_assoc(Nb, Parents, Node,  Parents1),
+    put_assoc(Nb, OpenS, NewGScore, OpenS1),
+    h(Drive, Nb, Goal,  NbH),
+    NbFScore1 is NewGScore + NbH,
+    goal_code(Goal, Nb, NbGC),
+    add_to_heap(OpenQ, (NbFScore1,NbGC), Nb, OpenQ1),
+
+    astar_pass(Conf,  Nbs, Node, GScore,
+                      OpenQ1, OpenS1, Closed, Parents1,  Sol).
+
+astar_res(Parents, Node, Sol0,  Sol) :-
+    ( get_assoc(Node, Parents, Parent) ->
+        astar_res(Parents, Parent, [Node|Sol0],  Sol)
+    ; Sol = Sol0 ).
