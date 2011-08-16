@@ -1,5 +1,4 @@
 #lang racket
-(require errortrace)
 ;;
 ;; I wonder if the final A* will look more clean & be faster than for
 ;; other langs.. in theory, it should.
