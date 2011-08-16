@@ -218,7 +218,7 @@
           
           (mset-add! closed-set x)
 
-          (for ([y (nbs x)])
+          (for ([y (in-list (nbs x))])
             (let/ec continue
               (when (mset-member? closed-set y)
                     (continue))
