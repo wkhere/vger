@@ -191,11 +191,11 @@
 
 (require "data.rkt")
 
-(define-syntax-rule (make-mset) (make-hash))
-(define-syntax-rule (mset-add! s x) (hash-set! s x #t))
-(define-syntax-rule (mset-del! s x) (hash-remove! s x))
-(define-syntax-rule (mset-member? s x) (hash-has-key? s x))
-(define-syntax-rule (mset-empty? s) (zero? (hash-count s)))
+(define-syntax-rule (make-mset) (set))
+(define-syntax-rule (mset-add! s x) (set! s (set-add s x)))
+(define-syntax-rule (mset-del! s x) (set! s (set-remove s x)))
+(define-syntax-rule (mset-member? s x) (set-member? s x))
+(define-syntax-rule (mset-empty? s) (set-empty? s))
 
 (define (a* h nbs dist node0 goal)
   (let ([closed-set (make-mset)]
