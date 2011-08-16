@@ -3,6 +3,13 @@
 (require racket/set data/heap)
 
 
+(define-syntax-rule (make-mset) (set))
+(define-syntax-rule (mset-add! s x) (set! s (set-add s x)))
+(define-syntax-rule (mset-del! s x) (set! s (set-remove s x)))
+(define-syntax-rule (mset-member? s x) (set-member? s x))
+(define-syntax-rule (mset-empty? s) (set-empty? s))
+
+
 (define (make-heap2)
   (cons
    (make-heap (lambda (x y)
