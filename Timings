@@ -8,7 +8,4 @@ enioar 1,1 to 20.7:
     erl: 16-19 ms                       moon
 
   simpler but still special heap structures:
-    rkt: 20-35 ms                       moon
-    rkt: 13-17 ms                       moon
-    ^^ after some macroing and with jit-disabled on map but enabled on data
-    (?!?)
+    rkt: 20-30 ms                       moon
