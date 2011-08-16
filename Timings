@@ -1,0 +1,13 @@
+enioar 1,1 to 20.7:
+
+  mostly-linear scanning on node deletion from heap:
+    py: 15-30 ms (gc triggered?)        moon
+    pl: 65-85 ms                        moon
+
+  fancy heap structures:
+    erl: 16-19 ms                       moon
+
+  simpler but still special heap structures:
+    rkt: 20-35 ms                       moon
+
+
