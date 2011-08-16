@@ -9,5 +9,5 @@ enioar 1,1 to 20.7:
 
   simpler but still special heap structures:
     rkt: 20-35 ms                       moon
-
-
+    rkt: 13-24 ms                       moon
+    ^^ after some macroing and with jit-disabled (?!?)

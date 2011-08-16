@@ -52,7 +52,7 @@
           (for ([x (in-range x1 (add1 x2))])
                (env-v! s x y v))]))
 
-(define (env . args)
+(define-syntax-rule (env args)
   (hash-ref envdata args 'block))
 (define (env-bbox s)
   (hash-ref envdata (cons s 'bbox)))
@@ -154,23 +154,24 @@
          [(cons mx my)
           (for ([x (in-range (add1 mx))])
                (for ([y (in-range (add1 my))])
-                    (env sector x y)))])
+                    (env (list sector x y))))])
   'ok)
 
-(define (nb s x y)
-  (if (eq? (env s x y) 'block)
+(define (nb node)
+  (if (eq? (env node) 'block)
       empty
-      (foldl (match-lambda* 
-              [(list (list i j) acc)
-               (let ([new-place (list s (+ x i) (+ y j))])
-                 (if (eq? (apply env new-place) 'block)
-                     acc
-                     (cons new-place acc)))])
-             empty
-             '[[-1  0] [-1  1] [ 0  1] [ 1  1] 
-               [ 1  0] [ 1 -1] [ 0 -1] [-1 -1]])))
+      (match-let ([(list s x y) node])
+        (foldl (match-lambda* 
+                [(list (list i j) acc)
+                 (let ([new-place (list s (+ x i) (+ y j))])
+                   (if (eq? (env new-place) 'block)
+                       acc
+                       (cons new-place acc)))])
+               empty
+               '[[-1  0] [-1  1] [ 0  1] [ 1  1] 
+                 [ 1  0] [ 1 -1] [ 0 -1] [-1 -1]]))))
 
-(check eq? empty (nb 'enioar 0 0))
+(check eq? empty (nb '[enioar 0 0]))
 
 (define h0 
   (match-lambda*
@@ -184,8 +185,8 @@
 
 (define (a*-drived drive node0 goal)
   (a* (curry h-drived drive)
-      (lambda (node) (apply nb node))
-      (lambda (node1 _node2) (mvcost (apply env node1) drive))
+      (lambda (node) (nb node))
+      (lambda (node1 _node2) (mvcost (env node1) drive))
       node0 
       goal))
 
