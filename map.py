@@ -234,15 +234,11 @@ def astar((h, nbs, dist), node0, goal):
             if y in openset:
                 if estimate_g < g[y]:
                     heapdel(openq, y)
-                    update_y = True
                 else:
-                    update_y = False
-            else:
-                update_y = True
+                    continue
 
-            if update_y:
-                parents[y] = x
-                g[y] = gy = estimate_g
-                fy = h(y, goal) + gy
-                heappush(openq, (fy,y))
-                openset.add(y)
+            parents[y] = x
+            g[y] = gy = estimate_g
+            fy = h(y, goal) + gy
+            heappush(openq, (fy,y))
+            openset.add(y)
