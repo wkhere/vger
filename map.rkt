@@ -192,12 +192,19 @@
 
 (require "data.rkt")
 
+(define-syntax-rule (make-mset) (make-hash))
+(define-syntax-rule (mset-add! s x) (hash-set! s x #t))
+(define-syntax-rule (mset-del! s x) (hash-remove! s x))
+(define-syntax-rule (mset-member? s x) (hash-has-key? s x))
+(define-syntax-rule (mset-empty? s) (zero? (hash-count s)))
+
 (define (a* h nbs dist node0 goal)
-  (let ([closed-set (make-hash)]
+  (let ([closed-set (make-mset)]
         [parents    (make-hash)]
         [g          (make-hash (list (cons node0 0)))]
-        [open-set   (make-hash (list (cons node0 #t)))]
+        [open-set   (make-mset)]
         [open-q     (make-heap2)])
+    (mset-add! open-set node0)
     (let ([f0 (h node0 goal)])
       (heap2-add! open-q f0 node0))
 
@@ -208,23 +215,23 @@
             acc)))      
     
     (let/ec return
-      (do () ((zero? (hash-count open-set)) #f)
+      (do () ((mset-empty? open-set) #f)
 
         (let-values ([[_ x] (heap2-pop! open-q)])
-          (hash-remove! open-set x)
+          (mset-del! open-set x)
           (when (equal? x goal)
                 (return (cons-path goal null)))
           
-          (hash-set! closed-set x #t)
+          (mset-add! closed-set x)
 
           (for ([y (nbs x)])
             (let/ec continue
-              (when (hash-has-key? closed-set y)
+              (when (mset-member? closed-set y)
                     (continue))
 
               (let ([estimate-g (+ (hash-ref g x) (dist x y))])
                 
-                (when (hash-has-key? open-set y)
+                (when (mset-member? open-set y)
                       (if (< estimate-g (hash-ref g y))
                           (heap2-del! open-q y)
                           (continue)))
@@ -233,4 +240,4 @@
                 (hash-set! g y estimate-g)
                 (let ([fy (+ (h y goal) estimate-g)])
                   (heap2-add! open-q fy y))
-                (hash-set! open-set y #t)))))))))
+                (mset-add! open-set y)))))))))
