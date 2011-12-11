@@ -185,7 +185,7 @@
 
 (define (a*-drived drive node0 goal)
   (a* (curry h-drived drive)
-      (lambda (node) (nb node))
+      nb
       (lambda (node1 _node2) (mvcost (env node1) drive))
       node0 
       goal))
