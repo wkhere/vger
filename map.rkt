@@ -236,3 +236,9 @@
                 (let ([fy (+ (h y goal) estimate-g)])
                   (heap2-add! open-q fy y))
                 (mset-add! open-set y)))))))))
+
+(define (ex1)
+  (a*-drived 'ip '(enioar 1 1) '(enioar 20 7)))
+
+(define (ex1n n)
+  (for ([_ (in-range 0 n)]) (ex1)))
