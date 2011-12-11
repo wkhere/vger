@@ -216,6 +216,7 @@
           (when (equal? x goal)
                 (return (cons-path goal null)))
           
+          ;; should (heap2-del! open-q x) be also here??
           (mset-add! closed-set x)
 
           (for ([y (in-list (nbs x))])
