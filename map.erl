@@ -285,3 +285,18 @@ cons_path(Node, Parents, Acc) ->
             cons_path(Parent, Parents, [Node|Acc]);
         error -> Acc
     end.
+
+%% runner
+
+setup() ->
+    mk_env(),
+    lists:foreach(fun check_env_is_complete/1, [enioar]).
+run() ->
+    setup(),
+    run1().
+run1() ->
+    run1({1,1}, {20,7}).
+run1(XY, XY2) ->
+    run1(ion, enioar, XY, XY2).
+run1(Drive, Sector, {X,Y}, {X2,Y2}) ->
+    timer:tc(?MODULE, astar_drived, [ Drive, {Sector,X,Y}, {Sector,X2,Y2} ]).
