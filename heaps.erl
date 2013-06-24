@@ -2,38 +2,51 @@
 -export([ add/3, add/4, contains_value/2, delete_by_value/2, delete/3,
           mapping/2, new/0, take_min/1 ]).
 
+-type pri() :: any().
+-type heap_tree_key() :: tuple(pri(), reference()).
+-type heap() :: tuple(gb_tree(), dict()).
+
+-spec new() -> heap().
 new() ->
     {gb_trees:empty(), dict:new()}.
 
+-spec add(pri(), any(), heap()) -> heap().
 add(Pri, Val, Heap) ->
     add(Pri, Val, none, Heap).
 
+-spec add(pri(), any(), any(), heap()) -> heap().
 add(Pri, Val, Aux, Heap={T0,R0}) ->
     false = contains_value(Val, Heap),
     TreeKey = {Pri, make_ref()},
     {gb_trees:insert(TreeKey, Val, T0),
      dict:store(Val, {TreeKey, Aux}, R0)}.
 
+-spec take_min(heap()) -> tuple(pri(), any(), heap()).
 take_min(_Heap={T0,R0}) ->
     {{Pri,_}, Val, T1} = gb_trees:take_smallest(T0),
     {Pri, Val, {T1, r_delete(Val, R0)}}.
 
+-spec mapping(any(), heap()) -> tuple(heap_tree_key(), any()).
 mapping(Val, _Heap={_T,R}) ->
     {_TreeKey, _Aux} = dict:fetch(Val, R).
 -compile({inline, mapping/2}).
 
+-spec delete_by_value(any(), heap()) -> heap().
 delete_by_value(Val, Heap) ->
     {TreeKey,_} = mapping(Val, Heap),
     delete(TreeKey, Val, Heap).
 
+-spec delete(heap_tree_key(), any(), heap()) -> heap().
 delete(TreeKey, Val, _Heap={T0,R0}) ->
     {gb_trees:delete(TreeKey, T0),  r_delete(Val, R0)}.
 -compile({inline, delete/3}).
 
+-spec r_delete(any(), dict()) -> dict().
 r_delete(Val, R0) ->
     dict:update(Val, fun({_,Aux})-> {none,Aux} end, R0).
 -compile({inline, r_delete/2}).
 
+-spec contains_value(any(), heap()) -> boolean().
 contains_value(Val, _Heap={_,R}) ->
     case dict:find(Val, R) of
         {ok, {TreeKey,_}} when TreeKey =/= none -> true;
