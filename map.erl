@@ -233,8 +233,9 @@ mk_env() ->
 
 check_env_is_complete(Sector) ->
     {MX, MY} = env(Sector, bbox),
-    [ begin E=env(Sector,X,Y), 
-            E=:=block orelse mvcost(E) 
+    [ case env(Sector,X,Y) of
+        none -> error({missing_env, Sector, {X,Y}});
+        _ -> ok
       end || X <- lists:seq(0,MX), Y <- lists:seq(0,MY) ],
     ok.
 
