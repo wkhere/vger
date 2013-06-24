@@ -31,6 +31,7 @@ env_init() ->
     ets:new(?ENV_ETS, [named_table]).
 
 env_set(Key, Val) ->
+    %% think if vals should be writable only once
     true = ets:insert(?ENV_ETS, {Key, Val}),
     ok.
 env_get1(Key) ->
@@ -39,6 +40,7 @@ env_get1(Key) ->
         [] -> none
     end.
 
+%% todo: store wormholes
 env(Sector, bbox, X, Y) ->
     env_set({Sector, bbox}, {X,Y});
 env(Sector, X, Y, block) when is_integer(X), is_integer(Y) ->
@@ -51,6 +53,7 @@ env(Sector, X, {Y1,Y2}, E) when is_integer(X) ->
 env(Sector, {X1,X2}, Y_or_Ys, E) ->
     lists:foreach(fun(X)-> env(Sector, X, Y_or_Ys, E) end, lists:seq(X1,X2)).
 
+%% todo: get wormholes
 env(Sector, bbox) ->
     env_get1({Sector, bbox}).
 env(Sector, X, Y) ->
