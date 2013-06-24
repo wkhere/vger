@@ -54,12 +54,14 @@ env_get1(Key) ->
 
 -type sector() :: atom().
 -type coord1() :: non_neg_integer().
+-type coord_range() :: {coord1(), coord1()}.
 -type xy() :: {coord1(), coord1()}.
 -type coords() :: {sector(), coord1(), coord1()}.
 
 %% todo: store wormholes
--spec env(sector(), 
-    atom() | coord1() | xy(), coord1() | xy(), coord1() | env()) -> ok.
+-spec env(sector(), atom(), coord1(), coord1()) -> ok
+       ; (sector(), 
+            coord1() | coord_range(), coord1() | coord_range(), env()) -> ok.
 env(Sector, bbox, X, Y) ->
     env_set({Sector, bbox}, {X,Y});
 env(Sector, X, Y, block) when is_integer(X), is_integer(Y) ->
