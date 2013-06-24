@@ -1,6 +1,6 @@
 -module(heaps).
 -export([ add/3, add/4, contains_value/2, delete_by_value/2, delete/3,
-          mapping/2, new/0, take_min/1 ]).
+          is_empty/1, mapping/2, new/0, take_min/1 ]).
 
 -type pri() :: any().
 -type heap_tree_key() :: tuple(pri(), reference()).
@@ -10,6 +10,10 @@
 -spec new() -> heap().
 new() ->
     {gb_trees:empty(), dict:new()}.
+
+-spec is_empty(heap()) -> boolean().
+is_empty(_Heap={{0,nil}, _}) -> true;
+is_empty(_Heap) -> false.
 
 -spec add(pri(), any(), heap()) -> heap().
 add(Pri, Val, Heap) ->

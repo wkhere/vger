@@ -176,7 +176,6 @@ astar_drived(Drive, Node0, Goal) ->
            gen_h(Drive)},
           Node0, Goal).
 
--define(empty_heap, {{0,nil}, _}).
 
 -record(st, {open :: heaps:heap(), 
              closed :: set(), 
@@ -196,17 +195,20 @@ astar(Conf={_Nbs, _Dist, H}, Node0, Goal) ->
 
 
 -spec astar_loop(astar_conf(), coords(), #st{}) -> [coords()] | not_found.
-astar_loop(_Conf, _Goal, #st{open=?empty_heap}) -> 
-    not_found;
 
 astar_loop(Conf={Nbs, _Dist, _H}, Goal, St) ->
-    {_, X, Open1} = heaps:take_min(St#st.open),
-    case X==Goal of
-        true ->
-            cons_path(Goal, St#st.parents);
-        false ->
-            Closed1 = sets:add_element(X, St#st.closed),
-            astar_nbs(Conf, Goal, X, Nbs(X), St#st{open=Open1, closed=Closed1})
+    case heaps:is_empty(St#st.open) of
+        true -> not_found;
+        _ ->
+        {_, X, Open1} = heaps:take_min(St#st.open),
+        case X==Goal of
+            true ->
+                cons_path(Goal, St#st.parents);
+            false ->
+                Closed1 = sets:add_element(X, St#st.closed),
+                astar_nbs(Conf, Goal, X, Nbs(X), 
+                    St#st{open=Open1, closed=Closed1})
+        end
     end.
 
 
