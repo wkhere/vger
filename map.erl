@@ -101,8 +101,8 @@ mk_env() ->
 check_env_is_complete(Sector) ->
     {MX, MY} = env(Sector, bbox),
     [ case env(Sector,X,Y) of
-        none -> error({missing_env, Sector, {X,Y}});
-        _ -> ok
+          none -> error({missing_env, Sector, {X,Y}});
+          _ -> ok
       end || X <- lists:seq(0,MX), Y <- lists:seq(0,MY) ],
     ok.
 
@@ -180,7 +180,7 @@ astar_drived(Drive, Node0, Goal) ->
 -record(st, {open :: heaps:heap(), 
              closed :: set(), 
              parents :: dict()
-             }).
+            }).
 
 -type astar_conf() :: {nb_fun(), cost_fun(), cost_fun()}.
 
@@ -200,15 +200,15 @@ astar_loop(Conf={Nbs, _Dist, _H}, Goal, St) ->
     case heaps:is_empty(St#st.open) of
         true -> not_found;
         _ ->
-        {_, X, Open1} = heaps:take_min(St#st.open),
-        case X==Goal of
-            true ->
-                cons_path(Goal, St#st.parents);
-            false ->
-                Closed1 = sets:add_element(X, St#st.closed),
-                astar_nbs(Conf, Goal, X, Nbs(X), 
-                    St#st{open=Open1, closed=Closed1})
-        end
+            {_, X, Open1} = heaps:take_min(St#st.open),
+            case X==Goal of
+                true ->
+                    cons_path(Goal, St#st.parents);
+                false ->
+                    Closed1 = sets:add_element(X, St#st.closed),
+                    astar_nbs(Conf, Goal, X, Nbs(X), 
+                              St#st{open=Open1, closed=Closed1})
+            end
     end.
 
 
