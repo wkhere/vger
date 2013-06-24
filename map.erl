@@ -107,6 +107,8 @@ check_env_is_complete(Sector) ->
     ok.
 
 
+-type nb_fun() :: fun( (coords()) -> [coords()] ).
+
 -spec nb(coords()) -> [coords()].
 nb(Place) -> 
     case env(Place) of
@@ -181,7 +183,7 @@ astar_drived(Drive, Node0, Goal) ->
              parents :: dict()
              }).
 
--type astar_conf() :: {fun(), cost_fun(), cost_fun()}.
+-type astar_conf() :: {nb_fun(), cost_fun(), cost_fun()}.
 
 
 -spec astar(astar_conf(), coords(), coords()) -> [coords()] | not_found.
