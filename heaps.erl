@@ -5,6 +5,7 @@
 -type pri() :: any().
 -type heap_tree_key() :: tuple(pri(), reference()).
 -type heap() :: tuple(gb_tree(), dict()).
+-export_type([heap/0]).
 
 -spec new() -> heap().
 new() ->
