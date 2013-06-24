@@ -12,8 +12,8 @@ new() ->
     {gb_trees:empty(), dict:new()}.
 
 -spec is_empty(heap()) -> boolean().
-is_empty(_Heap={{0,nil}, _}) -> true;
-is_empty(_Heap) -> false.
+is_empty(_Heap={T, _}) ->
+    gb_trees:size(T) == 0.
 
 -spec add(pri(), any(), heap()) -> heap().
 add(Pri, Val, Heap) ->
