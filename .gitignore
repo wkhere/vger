@@ -1,3 +1,4 @@
 *.pyc
 *.beam
+heaps.erl
 /compiled/
