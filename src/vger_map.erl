@@ -1,4 +1,4 @@
--module(map).
+-module(vger_map).
 -compile(export_all).
 -define(ENV_ETS, pardus_vger_env).
 
