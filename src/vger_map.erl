@@ -177,9 +177,9 @@ astar_drived(Drive, Node0, Goal) ->
           Node0, Goal).
 
 
--record(st, {open :: heaps:heap(), 
-             closed :: set(), 
-             parents :: dict()
+-record(st, {open :: heaps:heap(),
+             closed ::  sets:set(),
+             parents :: dict:dict()
             }).
 
 -type astar_conf() :: {nb_fun(), cost_fun(), cost_fun()}.
@@ -250,11 +250,11 @@ astar_upd(Conf={_,_,H}, Goal, X, [Y|Ys], New_GY, St) ->
     astar_nbs(Conf, Goal, X, Ys, St#st{open=Open1, parents=Parents1}).
 
 
--spec cons_path(coords(), dict()) -> [coords()].
+-spec cons_path(coords(), dict:dict()) -> [coords()].
 cons_path(Node, Parents) ->
     cons_path(Node, Parents, []).
 
--spec cons_path(coords(), dict(), [coords()]) -> [coords()].
+-spec cons_path(coords(), dict:dict(), [coords()]) -> [coords()].
 cons_path(Node, Parents, Acc) ->
     case dict:find(Node, Parents) of
         {ok, Parent} ->
