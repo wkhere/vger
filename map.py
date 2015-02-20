@@ -189,6 +189,9 @@ def astar_drived(drive, node0, goal):
                   lambda n1,_n2: mvcost(envdata[n1],drive)),
                  node0, goal)
 
+def run():
+    return astar_drived('ion', ('enioar',1,1), ('enioar',20,7))
+
 
 from heapq import heappush, heappop, heapify
 
