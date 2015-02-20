@@ -94,7 +94,7 @@ mk_env() ->
         undefined -> env_init();
         _ -> ok
     end,
-    envdata:mk(fun env/4).
+    vger_envdata:mk(fun env/4).
 
 
 -spec check_env_is_complete(atom()) -> ok.
