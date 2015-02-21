@@ -277,7 +277,7 @@ well_known_path() ->
         {17,6}, {18,7}, {19,6}, {20,7}
     ],
     Path1 = lists:map(fun({X,Y}) -> {S,X,Y} end, Path),
-    {drived_env(ion), {S,1,1}, {S,20,7}, {path, Path1}}.
+    {drived_env(ion), {S,1,1}, {S,20,7}, Path1}.
 
 run1(XY, XY2) ->
     run1(ion, enioar, XY, XY2).
