@@ -168,13 +168,13 @@ gen_h(Drive) ->
 gen_dist(Drive) ->
     fun(P1,_P2) -> mvcost(env(P1),Drive) end.
 
+drived_env(Drive) ->
+    {fun nb_memo/1, gen_dist(Drive), gen_h(Drive)}.
 
 -spec astar_drived(drive(), coords(), coords()) -> [coords()].
 astar_drived(Drive, Node0, Goal) ->
-    astar({fun nb_memo/1,
-           gen_dist(Drive),
-           gen_h(Drive)},
-          Node0, Goal).
+    astar(drived_env(Drive),
+         Node0, Goal).
 
 
 -record(st, {open :: heaps:heap(),
@@ -268,14 +268,31 @@ cons_path(Node, Parents, Acc) ->
 setup() ->
     mk_env(),
     lists:foreach(fun check_env_is_complete/1, [enioar, lave, ook]).
-run() ->
-    setup(),
-    run1().
-run1() ->
-    run1({1,1}, {20,7}).
+
+well_known_path() ->
+    S = enioar,
+    Path = [
+        {2,2}, {3,3}, {4,4}, {5,4}, {6,4}, {7,4}, {8,4}, {9,4},
+        {10,4}, {11,4}, {12,4}, {13,4}, {14,5}, {15,6}, {16,7},
+        {17,6}, {18,7}, {19,6}, {20,7}
+    ],
+    Path1 = lists:map(fun({X,Y}) -> {S,X,Y} end, Path),
+    {drived_env(ion), {S,1,1}, {S,20,7}, {path, Path1}}.
+
 run1(XY, XY2) ->
     run1(ion, enioar, XY, XY2).
 
 -spec run1(drive(), sector(), xy(), xy()) -> {integer(), [coords()]}.
 run1(Drive, Sector, {X,Y}, {X2,Y2}) ->
     timer:tc(?MODULE, astar_drived, [ Drive, {Sector,X,Y}, {Sector,X2,Y2} ]).
+
+run() ->
+    setup(),
+    run_e().
+
+run_e() ->
+    {E,S,G,_} = well_known_path(),
+    run_e(E,S,G).
+
+run_e(E, Node1, Node2) ->
+    timer:tc(?MODULE, astar, [ E, Node1, Node2 ]).
