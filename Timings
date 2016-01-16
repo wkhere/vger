@@ -12,6 +12,15 @@ enioar 1,1 to 20.7:
     erl: 3.5 ms                         silver
     ex:  2.7 ms                         silver
 
+    erl: 1.8 ms                         xcite1
+    ex:  1.4 ms                         -//-
+
+    What is interesting for xcite1 is that the timings are
+    the same whether it's rescaled for 1/8vcpu, 1/4 or 1vcpu.
+    Looks like bigger cpu usage is handled in bursts.
+    Very good outcome.
+
+
   simpler but still special heap structures:
     rkt: 20-30 ms                       moon
 
