@@ -4,8 +4,15 @@ enioar 1,1 to 20.7:
     py: 15-30 ms (gc triggered?)        moon
     pl: 65-85 ms                        moon
 
+    py: 5 ms                            silver
+
   fancy heap structures:
     erl: 16-19 ms                       moon
 
+    erl: 3.5 ms                         silver
+    ex:  2.7 ms                         silver
+
   simpler but still special heap structures:
     rkt: 20-30 ms                       moon
+
+For ex (Elixir) see eastar repository.
