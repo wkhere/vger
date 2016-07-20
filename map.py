@@ -45,11 +45,11 @@ def env(s,x,y,v):
             envdata[(s,x,y)] = v
     elif isinstance(x,int) and isinstance(y,tuple):
         y1,y2 = y
-        for yi in xrange(y1,y2+1):
+        for yi in range(y1,y2+1):
             env(s,x,yi,v)
     elif isinstance(x,tuple):
         x1,x2 = x
-        for xi in xrange(x1,x2+1):
+        for xi in range(x1,x2+1):
             env(s,xi,y,v)
 
 # magically converted from prolog by removing dots and then
@@ -158,7 +158,7 @@ def nb(s,x,y):
     def test(i,j):
         n = (s,x+i,y+j)
         try:
-            if envdata[n] <> 'block': ns.append(n)
+            if envdata[n] != 'block': ns.append(n)
         except KeyError: pass
     test(-1,-1)
     test( 0,-1)
@@ -173,7 +173,9 @@ def nb(s,x,y):
 
 # A*
 
-def h((s1,x1,y1), (s2,x2,y2)):
+def h(point1, point2):
+    s1,x1,y1 = point1
+    s2,x2,y2 = point2
     from math import floor, sqrt
     assert s1==s2
     return floor(sqrt((x2-x1)**2 + (y2-y1)**2))
@@ -197,7 +199,7 @@ from heapq import heappush, heappop, heapify
 
 def heapdel(q, v, eqpred= lambda v,item: v==item[1]):
     found = False
-    for i in xrange(len(q)):
+    for i in range(len(q)):
         if eqpred(v,q[i]):
             found = True
             break
@@ -206,7 +208,8 @@ def heapdel(q, v, eqpred= lambda v,item: v==item[1]):
         heapify(q)
 
 
-def astar((h, nbs, dist), node0, goal):
+def astar(env, node0, goal):
+    h, nbs, dist = env
     closedset = set()
     parents = {}
     g = {}
@@ -222,7 +225,7 @@ def astar((h, nbs, dist), node0, goal):
         return []
 
     while openset:
-        #print "* openq size=", len(openq)
+        #print("* openq size=", len(openq))
         (_fx,x) = heappop(openq)
         openset.remove(x)
         if x == goal:
