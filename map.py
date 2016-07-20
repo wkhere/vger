@@ -245,3 +245,6 @@ def astar((h, nbs, dist), node0, goal):
             fy = h(y, goal) + gy
             heappush(openq, (fy,y))
             openset.add(y)
+
+
+if __name__ == '__main__': print(run())
