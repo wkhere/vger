@@ -1,3 +1,4 @@
+from typing import TypeVar, Tuple, Sequence
 from memo import memoize
 
 mvcost_base = {
@@ -173,7 +174,9 @@ def nb(s,x,y):
 
 # A*
 
-def h(point1, point2):
+Point = Tuple[str, int, int]
+
+def h(point1: Point, point2: Point) -> float:
     s1,x1,y1 = point1
     s2,x2,y2 = point2
     from math import floor, sqrt
