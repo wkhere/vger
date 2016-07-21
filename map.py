@@ -38,6 +38,7 @@ asteroid = 'asteroid'
 envdata = {}
 
 def env(s,x,y,v):
+    global envdata
     if x=='bbox':
         x,y=y,v
         envdata[(s,'bbox')] = (x,y)
