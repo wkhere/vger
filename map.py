@@ -147,6 +147,7 @@ env(enioar,  14,    12,    block)
 # enioar done.
 
 def check_env_is_complete(sector):
+    global envdata
     mx,my = envdata[(sector,'bbox')]
     for x in xrange(mx+1):
         for y in xrange(my+1):
@@ -155,6 +156,7 @@ def check_env_is_complete(sector):
 
 @memoize
 def nb(s,x,y):
+    global envdata
     if envdata[s,x,y] == 'block': return None
     ns = []
     def test(i,j):
@@ -191,6 +193,7 @@ def h_drived(drive, n1, n2):
 from functools import partial
 
 def astar_drived(drive, node0, goal):
+    global envdata
     return astar((partial(h_drived, drive), lambda n: nb(*n),
                   lambda n1,_n2: mvcost(envdata[n1],drive)),
                  node0, goal)
