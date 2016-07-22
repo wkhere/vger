@@ -171,7 +171,7 @@ def nb(s,x,y):
     test(-1,+1)
     test(-1, 0)
     return ns
-        
+
 
 # A*
 
