@@ -214,6 +214,12 @@ def heapdel(q, v, eqpred= lambda v,item: v==item[1]):
         del q[i]
         heapify(q)
 
+# todo:
+# Wrap heapq so that deletion puts a node in deletions set, then
+# pop does a real pop to (pri,node) and then checks if a node
+# shouldn't really be deleted - if so, repeats the pop.
+# Similar as I did for Racket version in data.rkt.
+
 
 def astar(env, node0, goal):
     h, nbs, dist = env
