@@ -228,15 +228,15 @@ def astar(env, node0, goal):
     def cons_path(node):
         parent = parents.get(node)
         if parent:
-            return cons_path(parent) + [node]
-        return []
+            yield from cons_path(parent)
+            yield node
 
     while openset:
         #print("* openq size=", len(openq))
         (_fx,x) = heappop(openq)
         openset.remove(x)
         if x == goal:
-            return cons_path(goal)
+            return list(cons_path(goal))
 
         closedset.add(x)
         for y in nbs(x):
