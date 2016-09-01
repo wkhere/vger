@@ -258,8 +258,8 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
                     continue
 
             parents[y] = x
-            g[y] = gy = estimate_g
-            fy = h(y, goal) + gy
+            g[y] = estimate_g
+            fy = h(y, goal) + estimate_g
             openq.add(fy,y)
             openset.add(y)
 
