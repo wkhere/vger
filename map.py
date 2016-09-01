@@ -228,10 +228,9 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
     h, nbs, dist = env
     closedset = set()   # type: Set[Point]
     parents = {}        # type: Dict[Point, Point]
-    g = {}              # type: Dict[Point, Distance]
-    g[node0] = 0
+    g = {node0: 0}
     f0 = h(node0, goal)
-    openset = set([node0])  # type: Set[Point]
+    openset = {node0}
     openq = PriQueue((f0, node0))
 
     def cons_path(node):
