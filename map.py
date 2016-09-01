@@ -207,24 +207,21 @@ from heapq import heappush, heappop, heapify
 
 class PriQueue:
     def __init__(self, initial_pv: Tuple[Distance, Point]) -> None:
-        self.heap = [initial_pv]
+        self.q = [initial_pv]
 
     def add(self, pri: Distance, v: Point) -> None:
-        heappush(self.heap, (pri, v))
+        heappush(self.q, (pri, v))
 
     def pop(self) -> Point:
-        return heappop(self.heap)[1]
+        return heappop(self.q)[1]
 
     def del_by_value(self, v: Point) -> None:
-        q = self.heap
-        found = False
+        q = self.q
         for i in range(len(q)):
             if v == q[i][1]:
-                found = True
-                break
-        if found:
-            del q[i]
-            heapify(q)
+                del q[i]
+                heapify(q)
+                return
 
 
 def astar(env, node0: Point, goal: Point) -> List[Point]:
