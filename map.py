@@ -203,23 +203,28 @@ def run():
     return astar_drived('ion', ('enioar',1,1), ('enioar',20,7))
 
 
-QItem = Tuple[Distance, Point]
-Queue = List[QItem]
-
 from heapq import heappush, heappop, heapify
 
-def heapdel(q: Queue, v: Point,
-            eqpred: Callable[[Point, QItem], bool]
-                = lambda v, item: v == item[1]
-            ) -> None:
-    found = False
-    for i in range(len(q)):
-        if eqpred(v,q[i]):
-            found = True
-            break
-    if found:
-        del q[i]
-        heapify(q)
+class PriQueue:
+    def __init__(self, initial_pv: Tuple[Distance, Point]) -> None:
+        self.heap = [initial_pv]
+
+    def add(self, pri: Distance, v: Point) -> None:
+        heappush(self.heap, (pri, v))
+
+    def pop(self) -> Point:
+        return heappop(self.heap)[1]
+
+    def del_by_value(self, v: Point) -> None:
+        q = self.heap
+        found = False
+        for i in range(len(q)):
+            if v == q[i][1]:
+                found = True
+                break
+        if found:
+            del q[i]
+            heapify(q)
 
 
 def astar(env, node0: Point, goal: Point) -> List[Point]:
@@ -230,7 +235,7 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
     g[node0] = 0
     f0 = h(node0, goal)
     openset = set([node0])  # type: Set[Point]
-    openq = [(f0, node0)]   # type: Queue
+    openq = PriQueue((f0, node0))
 
     def cons_path(node):
         parent = parents.get(node)
@@ -239,7 +244,7 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
             yield node
 
     while openset:
-        (_fx,x) = heappop(openq)
+        x = openq.pop()
         openset.remove(x)
         if x == goal:
             return list(cons_path(goal))
@@ -252,14 +257,14 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
 
             if y in openset:
                 if estimate_g < g[y]:
-                    heapdel(openq, y)
+                    openq.del_by_value(y)
                 else:
                     continue
 
             parents[y] = x
             g[y] = gy = estimate_g
             fy = h(y, goal) + gy
-            heappush(openq, (fy,y))
+            openq.add(fy,y)
             openset.add(y)
 
 
