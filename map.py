@@ -232,7 +232,6 @@ def astar(env, node0, goal):
             yield node
 
     while openset:
-        #print("* openq size=", len(openq))
         (_fx,x) = heappop(openq)
         openset.remove(x)
         if x == goal:
