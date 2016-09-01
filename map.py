@@ -252,10 +252,11 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
             estimate_g = g[x] + dist(x,y)
 
             if y in openset:
-                if estimate_g < g[y]:
-                    openq.del_by_value(y)
-                else:
+                if estimate_g >= g[y]:
                     continue
+                else:
+                    openq.del_by_value(y)
+                    # ^we want to update the priority
 
             parents[y] = x
             g[y] = estimate_g
