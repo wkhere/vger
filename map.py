@@ -203,25 +203,34 @@ def run():
     return astar_drived('ion', ('enioar',1,1), ('enioar',20,7))
 
 
-from heapq import heappush, heappop, heapify
+from blist import sortedlist # type: ignore
 
 class PriQueue:
-    def __init__(self, initial_pv: Tuple[Distance, Point]) -> None:
-        self.q = [initial_pv]
+    def __init__(self, initial_pv: Tuple[Distance, Point] = None) -> None:
+        self.q = sortedlist()
+        self.v2p = {} # type: Dict[Point, Distance]
+        if initial_pv: self.add(*initial_pv)
 
-    def add(self, pri: Distance, v: Point) -> None:
-        heappush(self.q, (pri, v))
+    def add(self, p, v) -> None:
+        self.q.add((p, v))
+        self.v2p[v] = p
 
     def pop(self) -> Point:
-        return heappop(self.q)[1]
+        v = self.q.pop(0)[1]
+        del self.v2p[v]
+        return v
 
     def del_by_value(self, v: Point) -> None:
         q = self.q
-        for i in range(len(q)):
-            if v == q[i][1]:
+        p = self.v2p[v]
+        i = q.bisect((p,))
+        while True:
+            pi,vi = q[i]
+            if pi != p: break
+            if vi == v:
                 del q[i]
-                heapify(q)
                 return
+            i += 1
 
 
 def astar(env, node0: Point, goal: Point) -> List[Point]:
