@@ -1,4 +1,6 @@
-py:
+pyall: pytypes pytest pytiming
+
+pyresult:
 	python3 map.py
 
 pytiming:
@@ -6,3 +8,6 @@ pytiming:
 
 pytest:
 	py.test
+
+pytypes:
+	mypy -i *.py
