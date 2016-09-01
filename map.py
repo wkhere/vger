@@ -1,4 +1,4 @@
-from typing import TypeVar, Tuple, Sequence
+from typing import TypeVar, Union, Tuple, Sequence, List, Set, Callable
 from memo import memoize
 
 mvcost_base = {
@@ -154,8 +154,11 @@ def check_env_is_complete(sector):
             envdata[(sector,x,y)]
 
 
+Point = Tuple[str, int, int]
+Distance = Union[int, float]
+
 @memoize
-def nb(s,x,y):
+def nb(s,x,y) -> List[Point]:
     global envdata
     if envdata[s,x,y] == 'block': return None
     ns = []
@@ -177,9 +180,7 @@ def nb(s,x,y):
 
 # A*
 
-Point = Tuple[str, int, int]
-
-def h(point1: Point, point2: Point) -> float:
+def h(point1: Point, point2: Point) -> Distance:
     s1,x1,y1 = point1
     s2,x2,y2 = point2
     from math import floor, sqrt
@@ -202,9 +203,15 @@ def run():
     return astar_drived('ion', ('enioar',1,1), ('enioar',20,7))
 
 
+QItem = Tuple[Distance, Point]
+Queue = List[QItem]
+
 from heapq import heappush, heappop, heapify
 
-def heapdel(q, v, eqpred= lambda v,item: v==item[1]):
+def heapdel(q: Queue, v: Point,
+            eqpred: Callable[[Point, QItem], bool]
+                = lambda v, item: v == item[1]
+            ) -> None:
     found = False
     for i in range(len(q)):
         if eqpred(v,q[i]):
@@ -215,15 +222,15 @@ def heapdel(q, v, eqpred= lambda v,item: v==item[1]):
         heapify(q)
 
 
-def astar(env, node0, goal):
+def astar(env, node0: Point, goal: Point) -> List[Point]:
     h, nbs, dist = env
-    closedset = set()
-    parents = {}
-    g = {}
+    closedset = set()   # type: Set[Point]
+    parents = {}        # type: Dict[Point, Point]
+    g = {}              # type: Dict[Point, Distance]
     g[node0] = 0
     f0 = h(node0, goal)
-    openset = set([node0])
-    openq = [(f0, node0)]
+    openset = set([node0])  # type: Set[Point]
+    openq = [(f0, node0)]   # type: Queue
 
     def cons_path(node):
         parent = parents.get(node)
