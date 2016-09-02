@@ -206,12 +206,12 @@ def run():
 from heapq import heappush, heappop
 
 class PriQueue:
-    def __init__(self, initial_pv: Tuple[Distance, Point]) -> None:
+    def __init__(self, initial_vp: Tuple[Point, Distance]) -> None:
         self.s = set()  # type: Set[Point]
         self.q = []     # type: List[Tuple[Distance, Point]]
-        self.add(*initial_pv)
+        self.add(*initial_vp)
 
-    def add(self, pri: Distance, v: Point) -> None:
+    def add(self, v: Point, pri: Distance) -> None:
         self.s.add(v)
         heappush(self.q, (pri, v))
 
@@ -235,7 +235,7 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
     parents = {}        # type: Dict[Point, Point]
     g = {node0: 0}
     f0 = h(node0, goal)
-    openq = PriQueue((f0, node0))
+    openq = PriQueue((node0, f0))
 
     def cons_path(node):
         parent = parents.get(node)
@@ -261,7 +261,7 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
             parents[y] = x
             g[y] = estimate_g
             fy = h(y, goal) + estimate_g
-            openq.add(fy,y)
+            openq.add(y, fy)
 
 
 if __name__ == '__main__': print(run())
