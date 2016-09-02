@@ -203,25 +203,30 @@ def run():
     return astar_drived('ion', ('enioar',1,1), ('enioar',20,7))
 
 
-from heapq import heappush, heappop, heapify
+from heapq import heappush, heappop
 
 class PriQueue:
     def __init__(self, initial_pv: Tuple[Distance, Point]) -> None:
-        self.q = [initial_pv]
+        self.s = set()  # type: Set[Point]
+        self.q = []     # type: List[Tuple[Distance, Point]]
+        self.add(*initial_pv)
 
     def add(self, pri: Distance, v: Point) -> None:
+        self.s.add(v)
         heappush(self.q, (pri, v))
 
     def pop(self) -> Point:
-        return heappop(self.q)[1]
+        while True:
+            v = heappop(self.q)[1]
+            if v in self.s:
+                self.s.discard(v)
+                return v
 
-    def del_by_value(self, v: Point) -> None:
-        q = self.q
-        for i in range(len(q)):
-            if v == q[i][1]:
-                del q[i]
-                heapify(q)
-                return
+    def __len__(self):
+        return len(self.s)
+
+    def __contains__(self, v):
+        return v in self.s
 
 
 def astar(env, node0: Point, goal: Point) -> List[Point]:
@@ -230,7 +235,6 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
     parents = {}        # type: Dict[Point, Point]
     g = {node0: 0}
     f0 = h(node0, goal)
-    openset = {node0}
     openq = PriQueue((f0, node0))
 
     def cons_path(node):
@@ -239,9 +243,8 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
             yield from cons_path(parent)
             yield node
 
-    while openset:
+    while openq:
         x = openq.pop()
-        openset.remove(x)
         if x == goal:
             return list(cons_path(goal))
 
@@ -251,18 +254,14 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
 
             estimate_g = g[x] + dist(x,y)
 
-            if y in openset:
+            if y in openq:
                 if estimate_g >= g[y]:
                     continue
-                else:
-                    openq.del_by_value(y)
-                    # ^we want to update the priority
 
             parents[y] = x
             g[y] = estimate_g
             fy = h(y, goal) + estimate_g
             openq.add(fy,y)
-            openset.add(y)
 
 
 if __name__ == '__main__': print(run())
