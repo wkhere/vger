@@ -1,3 +1,8 @@
+go:
+	go fmt
+	go build
+	./vger
+
 pyall: pytypes pytest pytiming
 
 pyresult:
