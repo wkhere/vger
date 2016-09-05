@@ -7,6 +7,11 @@ type EnvCoord struct {
 	x, y   int
 }
 
+// goodie for pretty-printing the array of ptrs:
+func (pt *EnvCoord) String() string {
+	return fmt.Sprintf("%v", *pt)
+}
+
 type EnvBBox struct{ w, h int }
 
 type Tile uint8
