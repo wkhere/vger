@@ -171,3 +171,33 @@ func MakeEnv() {
 	env(enioar, 14, 12, Block)
 	// enioar done.
 }
+
+func Nbs(point *EnvCoord) []*EnvCoord {
+	tile, ok := envdata[*point]
+	if !ok {
+		panic(fmt.Sprintf("missing env at %v", point))
+	}
+	if tile == Block {
+		return nil
+	}
+
+	nbs := make([]*EnvCoord, 0, 8)
+
+	add := func(dx, dy int) {
+		nb := EnvCoord{point.sector, point.x + dx, point.y + dy}
+		v, ok := envdata[nb]
+		if ok && v != Block {
+			nbs = append(nbs, &nb)
+		}
+	}
+
+	add(-1, -1)
+	add(0, -1)
+	add(+1, -1)
+	add(+1, 0)
+	add(+1, +1)
+	add(0, +1)
+	add(-1, +1)
+	add(-1, 0)
+	return nbs
+}
