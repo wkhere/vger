@@ -149,8 +149,8 @@ env(enioar,  14,    12,    block)
 def check_env_is_complete(sector):
     global envdata
     mx,my = envdata[(sector,'bbox')]
-    for x in xrange(mx+1):
-        for y in xrange(my+1):
+    for x in range(mx+1):
+        for y in range(my+1):
             envdata[(sector,x,y)]
 
 
