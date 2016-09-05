@@ -26,5 +26,4 @@ func openqSanity(verbosity int) {
 
 func main() {
 	MakeEnv()
-	openqSanity(Verbose)
 }

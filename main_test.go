@@ -44,13 +44,19 @@ func ExampleNbs() {
 	// []
 }
 
-func ExampleSanity() {
+func ExampleOpenqOps() {
 	openqSanity(Verbose)
 	// Output: [two foo five]
 }
 
-func BenchmarkSanity(b *testing.B) {
+func BenchmarkOpenqOps(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		openqSanity(Quiet)
+	}
+}
+
+func BenchmarkNbs(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		Nbs(&EnvCoord{"enioar", 10, 10})
 	}
 }
