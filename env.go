@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 type EnvCoord struct {
 	sector string
@@ -200,4 +203,26 @@ func Nbs(point *EnvCoord) []*EnvCoord {
 	add(-1, +1)
 	add(-1, 0)
 	return nbs
+}
+
+func H(point1, point2 *EnvCoord) int {
+	if point1.sector != point2.sector {
+		panic("H() across sectors not implemented")
+	}
+	dx := point2.x - point1.x
+	dy := point2.y - point1.y
+	return int(math.Floor(math.Sqrt(float64(dx*dx) + float64(dy*dy))))
+}
+
+func HDrived(drive Drive) func(p1, p2 *EnvCoord) int {
+	scale := mvcost(Space, drive)
+	return func(p1, p2 *EnvCoord) int {
+		return scale * H(p1, p2)
+	}
+}
+
+func DistDrived(drive Drive) func(p1, p2 *EnvCoord) int {
+	return func(p1, p2 *EnvCoord) int {
+		return mvcost(envdata[*p1], drive)
+	}
 }
