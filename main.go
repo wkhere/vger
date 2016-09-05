@@ -5,6 +5,9 @@ import (
 	"fmt"
 )
 
+const Verbose = 1
+const Quiet = 0
+
 type Distance int
 type Node interface{}
 
@@ -63,17 +66,25 @@ func (qs *OpenQS) Len() int { return len(qs.set) }
 
 func (qs *OpenQS) Contains(v Node) bool { return qs.set[v] }
 
-// runner
-func main() {
+// run
+
+func openqSanity(verbosity int) {
 	openq := new(OpenQS)
 	openq.Init()
 	openq.Add("foo", 10)
 	openq.Add("five", 5)
 	openq.Add("foo", 3)
 	openq.Add("two", 2)
-	fmt.Printf("contains 'three': %v\n", openq.Contains("three"))
-	fmt.Printf("contains 'foo':   %v\n", openq.Contains("foo"))
+	res := make([]Node, 0, 3)
 	for openq.Len() > 0 {
-		fmt.Printf("%v ", *openq.Pop())
+		vptr := openq.Pop()
+		res = append(res, *vptr)
 	}
+	if verbosity > Quiet {
+		fmt.Printf("%v\n", res)
+	}
+}
+
+func main() {
+	openqSanity(Verbose)
 }

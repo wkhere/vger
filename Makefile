@@ -2,6 +2,10 @@ go:
 	go fmt
 	go build
 	./vger
+	go test
+
+gotiming:
+	go test -bench=. -benchmem	
 
 pyall: pytypes pytest pytiming
 
