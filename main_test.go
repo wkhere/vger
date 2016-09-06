@@ -5,6 +5,36 @@ import (
 	"testing"
 )
 
+type snode struct{ string }
+
+func (node snode) Data() interface{} { return node.string }
+
+func openqExample() []Node {
+	openq := new(OpenQS)
+	openq.Init()
+	openq.Add(snode{"foo"}, 10)
+	openq.Add(snode{"five"}, 5)
+	openq.Add(snode{"foo"}, 3)
+	openq.Add(snode{"two"}, 2)
+	res := make([]Node, 0, 3)
+	for openq.Len() > 0 {
+		vptr := openq.Pop()
+		res = append(res, *vptr)
+	}
+	return res
+}
+
+func ExampleOpenqOps() {
+	fmt.Print(openqExample())
+	// Output: [{two} {foo} {five}]
+}
+
+func BenchmarkOpenqOps(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		openqExample()
+	}
+}
+
 var e = Env{Ion}
 
 func TestEnvIsComplete(t *testing.T) {
@@ -46,24 +76,13 @@ func ExampleNbs() {
 	// []
 }
 
-func ExampleOpenqOps() {
-	openqSanity(Verbose)
-	// Output: [{two} {foo} {five}]
+func BenchmarkNbs(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		e.Nbs(&Coord{"enioar", 10, 10})
+	}
 }
 
 func ExampleAstar() {
 	fmt.Print(Astar(e, &Coord{"enioar", 1, 1}, &Coord{"enioar", 20, 7}))
 	// Output: []
-}
-
-func BenchmarkOpenqOps(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		openqSanity(Quiet)
-	}
-}
-
-func BenchmarkNbs(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		e.Nbs(&Coord{"enioar", 10, 10})
-	}
 }
