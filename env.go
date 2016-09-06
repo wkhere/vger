@@ -183,6 +183,7 @@ func MakeEnv() {
 }
 
 func (e Env) Nbs(node Node) []Node {
+	// todo: cache
 	point := node.(Coord)
 	tile, ok := envdata[point]
 	if !ok {

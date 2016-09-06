@@ -21,6 +21,7 @@ func Astar(config GraphConfig, node0, goal Node) (path []Node) {
 
 	var consPath func(node Node)
 	consPath = func(node Node) {
+		// todo: return reversed path & avoid recursion - but benchmark first
 		parent, ok := parents[node]
 		if ok {
 			consPath(parent)
