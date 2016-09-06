@@ -10,8 +10,10 @@ type QItem struct {
 }
 type Queue []*QItem
 
+type empty struct{}
+
 type OpenQS struct {
-	set   map[interface{}]bool
+	set   map[interface{}]empty
 	queue Queue
 }
 
@@ -37,19 +39,19 @@ func (q *Queue) Pop() interface{} {
 
 func (qs *OpenQS) Init() {
 	qs.queue = make(Queue, 0, 10)
-	qs.set = map[interface{}]bool{}
+	qs.set = map[interface{}]empty{}
 }
 
 func (qs *OpenQS) Add(v Node, priority Cost) {
 	heap.Push(&qs.queue, &QItem{&v, priority})
-	qs.set[v.Data()] = true
+	qs.set[v.Data()] = empty{}
 }
 
 func (qs *OpenQS) Pop() *Node {
 	for {
 		v := heap.Pop(&qs.queue).(*QItem).value
 		key := (*v).Data()
-		if qs.set[key] {
+		if _, ok := qs.set[key]; ok {
 			delete(qs.set, key)
 			return v
 		}
@@ -58,4 +60,7 @@ func (qs *OpenQS) Pop() *Node {
 
 func (qs *OpenQS) Len() int { return len(qs.set) }
 
-func (qs *OpenQS) Contains(v Node) bool { return qs.set[v.Data()] }
+func (qs *OpenQS) Contains(v Node) bool {
+	_, ok := qs.set[v.Data()]
+	return ok
+}
