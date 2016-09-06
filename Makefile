@@ -2,7 +2,7 @@ go:
 	go fmt
 	go build
 	./vger
-	go test
+	go test -cover
 
 gotiming:
 	go test -bench=. -benchmem	
