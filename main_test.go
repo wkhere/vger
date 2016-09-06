@@ -1,32 +1,36 @@
 package main
 
 import (
+	"flag"
 	"fmt"
+	"os"
 	"testing"
 )
 
-type snode struct{ string }
-
-func (node snode) Data() interface{} { return node.string }
+func TestMain(m *testing.M) {
+	flag.Parse()
+	MakeEnv()
+	os.Exit(m.Run())
+}
 
 func openqExample() []Node {
 	openq := new(OpenQS)
 	openq.Init()
-	openq.Add(snode{"foo"}, 10)
-	openq.Add(snode{"five"}, 5)
-	openq.Add(snode{"foo"}, 3)
-	openq.Add(snode{"two"}, 2)
+	openq.Add("foo", 10)
+	openq.Add("five", 5)
+	openq.Add("foo", 3)
+	openq.Add("two", 2)
 	res := make([]Node, 0, 3)
 	for openq.Len() > 0 {
-		vptr := openq.Pop()
-		res = append(res, *vptr)
+		v := openq.Pop()
+		res = append(res, *v)
 	}
 	return res
 }
 
 func ExampleOpenqOps() {
 	fmt.Print(openqExample())
-	// Output: [{two} {foo} {five}]
+	// Output: [two foo five]
 }
 
 func BenchmarkOpenqOps(b *testing.B) {
@@ -35,10 +39,7 @@ func BenchmarkOpenqOps(b *testing.B) {
 	}
 }
 
-var e = Env{Ion}
-
 func TestEnvIsComplete(t *testing.T) {
-	MakeEnv()
 	sector := "enioar"
 	bbox := envbbox[sector]
 	for x := 0; x <= bbox.w; x++ {
@@ -52,8 +53,9 @@ func TestEnvIsComplete(t *testing.T) {
 }
 
 func ExampleNbs() {
+	e := Env{Ion}
 	p := func(x, y int) {
-		fmt.Println(e.Nbs(&Coord{"enioar", x, y}))
+		fmt.Println(e.Nbs(Coord{"enioar", x, y}))
 	}
 	p(0, 0)
 	p(0, 12)
@@ -78,11 +80,18 @@ func ExampleNbs() {
 
 func BenchmarkNbs(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		e.Nbs(&Coord{"enioar", 10, 10})
+		Env{Ion}.Nbs(Coord{"enioar", 10, 10})
 	}
 }
 
-func ExampleAstar() {
-	fmt.Print(Astar(e, &Coord{"enioar", 1, 1}, &Coord{"enioar", 20, 7}))
-	// Output: []
+func offExampleAstar() {
+	fmt.Print(astarWellKnownPath())
+	// Output:
+	// [{enioar 2 2} {enioar 3 3} {enioar 4 4} {enioar 5 4} {enioar 6 4} {enioar 7 4} {enioar 8 4} {enioar 9 4} {enioar 10 4} {enioar 11 4} {enioar 12 4} {enioar 13 4} {enioar 14 5} {enioar 15 6} {enioar 16 7} {enioar 17 6} {enioar 18 7} {enioar 19 6} {enioar 20 7}]
+}
+
+func BenchmarkAstar(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		astarWellKnownPath()
+	}
 }

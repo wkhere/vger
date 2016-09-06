@@ -28,14 +28,10 @@ type Coord struct {
 	X, Y   int
 }
 
-func (node *Coord) Data() interface{} {
-	return *node
-}
-
 // goodie for pretty-printing the array of ptrs:
-func (pt *Coord) String() string {
-	return fmt.Sprintf("%v", *pt)
-}
+// func (pt *Coord) String() string {
+// 	return fmt.Sprintf("%v", *pt)
+// }
 
 type bbox struct{ w, h int }
 
@@ -55,8 +51,8 @@ func mvcost(tile tile, drive Drive) Cost {
 	return Cost(int(tile) - int(drive))
 }
 
-var envbbox = map[string]bbox{}
-var envdata = map[Coord]tile{}
+var envbbox map[string]bbox
+var envdata map[Coord]tile
 
 type r struct{ c1, c2 int } // internal struct for env definition
 
@@ -91,6 +87,9 @@ func env(sector string, v1, v2 interface{}, tile tile) {
 }
 
 func MakeEnv() {
+	envbbox = map[string]bbox{}
+	envdata = map[Coord]tile{}
+
 	var enioar = "enioar"
 
 	envbb(enioar, 20, 12)
@@ -184,7 +183,7 @@ func MakeEnv() {
 }
 
 func (e Env) Nbs(node Node) []Node {
-	point := node.Data().(Coord)
+	point := node.(Coord)
 	tile, ok := envdata[point]
 	if !ok {
 		panic(fmt.Sprintf("missing env at %v", point))
@@ -199,7 +198,7 @@ func (e Env) Nbs(node Node) []Node {
 		newpoint := Coord{point.Sector, point.X + dx, point.Y + dy}
 		v, ok := envdata[newpoint]
 		if ok && v != Block {
-			nbs = append(nbs, &newpoint)
+			nbs = append(nbs, newpoint)
 		}
 	}
 
@@ -225,9 +224,9 @@ func hAbstract(p1, p2 Coord) Cost {
 
 func (e Env) H(n1, n2 Node) Cost {
 	scale := mvcost(Space, e.Drive)
-	return scale * hAbstract(n1.Data().(Coord), n2.Data().(Coord))
+	return scale * hAbstract(n1.(Coord), n2.(Coord))
 }
 
 func (e Env) Dist(n1, n2 Node) Cost {
-	return mvcost(envdata[n1.Data().(Coord)], e.Drive)
+	return mvcost(envdata[n1.(Coord)], e.Drive)
 }
