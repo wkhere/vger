@@ -53,6 +53,7 @@ func mvcost(tile tile, drive Drive) Cost {
 
 var envbbox map[string]bbox
 var envdata map[Coord]tile
+var envmemo map[Node][]Node
 
 type r struct{ c1, c2 int } // internal struct for env definition
 
@@ -87,7 +88,10 @@ func env(sector string, v1, v2 interface{}, tile tile) {
 }
 
 func (e Env) Nbs(node Node) []Node {
-	// todo: cache
+	if memo, ok := envmemo[node]; ok {
+		return memo
+	}
+
 	point := node.(Coord)
 	tile, ok := envdata[point]
 	if !ok {
@@ -115,6 +119,8 @@ func (e Env) Nbs(node Node) []Node {
 	add(0, +1)
 	add(-1, +1)
 	add(-1, 0)
+
+	envmemo[node] = nbs
 	return nbs
 }
 

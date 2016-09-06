@@ -3,6 +3,7 @@ package main
 func MakeEnv() {
 	envbbox = map[string]bbox{}
 	envdata = map[Coord]tile{}
+	envmemo = map[Node][]Node{}
 
 	enioar := "enioar"
 
