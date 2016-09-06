@@ -5,7 +5,7 @@ import (
 )
 
 type QItem struct {
-	value    *Node
+	value    Node
 	priority Cost
 }
 type Queue []*QItem
@@ -41,16 +41,15 @@ func (qs *OpenQS) Init() {
 }
 
 func (qs *OpenQS) Add(v Node, priority Cost) {
-	heap.Push(&qs.queue, &QItem{&v, priority})
+	heap.Push(&qs.queue, &QItem{v, priority})
 	qs.set[v] = struct{}{}
 }
 
-func (qs *OpenQS) Pop() *Node {
+func (qs *OpenQS) Pop() Node {
 	for {
 		v := heap.Pop(&qs.queue).(*QItem).value
-		key := *v
-		if _, ok := qs.set[key]; ok {
-			delete(qs.set, key)
+		if _, ok := qs.set[v]; ok {
+			delete(qs.set, v)
 			return v
 		}
 	}

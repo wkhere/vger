@@ -23,7 +23,7 @@ func openqExample() []Node {
 	res := make([]Node, 0, 3)
 	for openq.Len() > 0 {
 		v := openq.Pop()
-		res = append(res, *v)
+		res = append(res, v)
 	}
 	return res
 }

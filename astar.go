@@ -30,7 +30,7 @@ func Astar(config GraphConfig, node0, goal Node) (path []Node) {
 	}
 
 	for openq.Len() > 0 {
-		x := *openq.Pop()
+		x := openq.Pop()
 		if x == goal {
 			consPath(goal)
 			return path
