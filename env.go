@@ -5,30 +5,6 @@ import (
 	"math"
 )
 
-type EnvCoord struct {
-	sector string
-	x, y   int
-}
-
-// goodie for pretty-printing the array of ptrs:
-func (pt *EnvCoord) String() string {
-	return fmt.Sprintf("%v", *pt)
-}
-
-type EnvBBox struct{ w, h int }
-
-type Tile uint8
-
-const (
-	Block    Tile = 0
-	Space    Tile = 11
-	Nebula   Tile = 16
-	Viral    Tile = 18
-	Energy   Tile = 20
-	Asteroid Tile = 25
-	Exotic   Tile = 36
-)
-
 type Drive uint8
 
 const (
@@ -43,27 +19,59 @@ const (
 	EIp     Drive = 6
 )
 
-func mvcost(tile Tile, drive Drive) int {
-	return int(tile) - int(drive)
+type Env struct {
+	Drive
 }
 
-var envbbox = map[string]EnvBBox{}
-var envdata = map[EnvCoord]Tile{}
+type Coord struct {
+	Sector string
+	X, Y   int
+}
+
+func (node *Coord) Data() interface{} {
+	return *node
+}
+
+// goodie for pretty-printing the array of ptrs:
+func (pt *Coord) String() string {
+	return fmt.Sprintf("%v", *pt)
+}
+
+type bbox struct{ w, h int }
+
+type tile uint8
+
+const (
+	Block    tile = 0
+	Space    tile = 11
+	Nebula   tile = 16
+	Viral    tile = 18
+	Energy   tile = 20
+	Asteroid tile = 25
+	Exotic   tile = 36
+)
+
+func mvcost(tile tile, drive Drive) Cost {
+	return Cost(int(tile) - int(drive))
+}
+
+var envbbox = map[string]bbox{}
+var envdata = map[Coord]tile{}
 
 type r struct{ c1, c2 int } // internal struct for env definition
 
 func envbb(sector string, w, h int) {
-	envbbox[sector] = EnvBBox{w, h}
+	envbbox[sector] = bbox{w, h}
 }
 
-func env(sector string, v1, v2 interface{}, tile Tile) {
+func env(sector string, v1, v2 interface{}, tile tile) {
 	switch v1.(type) {
 	case int:
 		x := v1.(int)
 		switch v2.(type) {
 		case int:
 			y := v2.(int)
-			envdata[EnvCoord{sector, x, y}] = tile
+			envdata[Coord{sector, x, y}] = tile
 		case r:
 			ry := v2.(r)
 			for yi := ry.c1; yi <= ry.c2; yi++ {
@@ -175,8 +183,9 @@ func MakeEnv() {
 	// enioar done.
 }
 
-func Nbs(point *EnvCoord) []*EnvCoord {
-	tile, ok := envdata[*point]
+func (e Env) Nbs(node Node) []Node {
+	point := node.Data().(Coord)
+	tile, ok := envdata[point]
 	if !ok {
 		panic(fmt.Sprintf("missing env at %v", point))
 	}
@@ -184,13 +193,13 @@ func Nbs(point *EnvCoord) []*EnvCoord {
 		return nil
 	}
 
-	nbs := make([]*EnvCoord, 0, 8)
+	nbs := make([]Node, 0, 8)
 
 	add := func(dx, dy int) {
-		nb := EnvCoord{point.sector, point.x + dx, point.y + dy}
-		v, ok := envdata[nb]
+		newpoint := Coord{point.Sector, point.X + dx, point.Y + dy}
+		v, ok := envdata[newpoint]
 		if ok && v != Block {
-			nbs = append(nbs, &nb)
+			nbs = append(nbs, &newpoint)
 		}
 	}
 
@@ -205,24 +214,20 @@ func Nbs(point *EnvCoord) []*EnvCoord {
 	return nbs
 }
 
-func H(point1, point2 *EnvCoord) int {
-	if point1.sector != point2.sector {
+func hAbstract(p1, p2 Coord) Cost {
+	if p1.Sector != p2.Sector {
 		panic("H() across sectors not implemented")
 	}
-	dx := point2.x - point1.x
-	dy := point2.y - point1.y
-	return int(math.Floor(math.Sqrt(float64(dx*dx) + float64(dy*dy))))
+	dx := p2.X - p1.X
+	dy := p2.Y - p1.Y
+	return Cost(math.Floor(math.Sqrt(float64(dx*dx) + float64(dy*dy))))
 }
 
-func HDrived(drive Drive) func(p1, p2 *EnvCoord) int {
-	scale := mvcost(Space, drive)
-	return func(p1, p2 *EnvCoord) int {
-		return scale * H(p1, p2)
-	}
+func (e Env) H(n1, n2 Node) Cost {
+	scale := mvcost(Space, e.Drive)
+	return scale * hAbstract(n1.Data().(Coord), n2.Data().(Coord))
 }
 
-func DistDrived(drive Drive) func(p1, p2 *EnvCoord) int {
-	return func(p1, p2 *EnvCoord) int {
-		return mvcost(envdata[*p1], drive)
-	}
+func (e Env) Dist(n1, n2 Node) Cost {
+	return mvcost(envdata[n1.Data().(Coord)], e.Drive)
 }

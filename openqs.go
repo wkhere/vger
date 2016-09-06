@@ -4,17 +4,14 @@ import (
 	"container/heap"
 )
 
-type Distance int
-type Node interface{}
-
 type QItem struct {
 	value    *Node
-	priority Distance
+	priority Cost
 }
 type Queue []*QItem
 
 type OpenQS struct {
-	set   map[Node]bool
+	set   map[interface{}]bool
 	queue Queue
 }
 
@@ -40,19 +37,20 @@ func (q *Queue) Pop() interface{} {
 
 func (qs *OpenQS) Init() {
 	qs.queue = make(Queue, 0, 10)
-	qs.set = map[Node]bool{}
+	qs.set = map[interface{}]bool{}
 }
 
-func (qs *OpenQS) Add(v Node, priority Distance) {
+func (qs *OpenQS) Add(v Node, priority Cost) {
 	heap.Push(&qs.queue, &QItem{&v, priority})
-	qs.set[v] = true
+	qs.set[v.Data()] = true
 }
 
 func (qs *OpenQS) Pop() *Node {
 	for {
 		v := heap.Pop(&qs.queue).(*QItem).value
-		if qs.set[*v] {
-			delete(qs.set, *v)
+		key := (*v).Data()
+		if qs.set[key] {
+			delete(qs.set, key)
 			return v
 		}
 	}
@@ -60,4 +58,4 @@ func (qs *OpenQS) Pop() *Node {
 
 func (qs *OpenQS) Len() int { return len(qs.set) }
 
-func (qs *OpenQS) Contains(v Node) bool { return qs.set[v] }
+func (qs *OpenQS) Contains(v Node) bool { return qs.set[v.Data()] }

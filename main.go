@@ -7,13 +7,17 @@ import (
 const Verbose = 1
 const Quiet = 0
 
+type SNode struct{ string }
+
+func (node SNode) Data() interface{} { return node.string }
+
 func openqSanity(verbosity int) {
 	openq := new(OpenQS)
 	openq.Init()
-	openq.Add("foo", 10)
-	openq.Add("five", 5)
-	openq.Add("foo", 3)
-	openq.Add("two", 2)
+	openq.Add(SNode{"foo"}, 10)
+	openq.Add(SNode{"five"}, 5)
+	openq.Add(SNode{"foo"}, 3)
+	openq.Add(SNode{"two"}, 2)
 	res := make([]Node, 0, 3)
 	for openq.Len() > 0 {
 		vptr := openq.Pop()

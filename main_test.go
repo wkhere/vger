@@ -5,13 +5,15 @@ import (
 	"testing"
 )
 
+var e = Env{Ion}
+
 func TestEnvIsComplete(t *testing.T) {
 	MakeEnv()
 	sector := "enioar"
 	bbox := envbbox[sector]
 	for x := 0; x <= bbox.w; x++ {
 		for y := 0; y <= bbox.h; y++ {
-			_, ok := envdata[EnvCoord{sector, x, y}]
+			_, ok := envdata[Coord{sector, x, y}]
 			if !ok {
 				t.Errorf("no key for (%s,%d,%d)", sector, x, y)
 			}
@@ -21,7 +23,7 @@ func TestEnvIsComplete(t *testing.T) {
 
 func ExampleNbs() {
 	p := func(x, y int) {
-		fmt.Println(Nbs(&EnvCoord{"enioar", x, y}))
+		fmt.Println(e.Nbs(&Coord{"enioar", x, y}))
 	}
 	p(0, 0)
 	p(0, 12)
@@ -46,7 +48,12 @@ func ExampleNbs() {
 
 func ExampleOpenqOps() {
 	openqSanity(Verbose)
-	// Output: [two foo five]
+	// Output: [{two} {foo} {five}]
+}
+
+func ExampleAstar() {
+	fmt.Print(Astar(e, &Coord{"enioar", 1, 1}, &Coord{"enioar", 20, 7}))
+	// Output: []
 }
 
 func BenchmarkOpenqOps(b *testing.B) {
@@ -57,6 +64,6 @@ func BenchmarkOpenqOps(b *testing.B) {
 
 func BenchmarkNbs(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		Nbs(&EnvCoord{"enioar", 10, 10})
+		e.Nbs(&Coord{"enioar", 10, 10})
 	}
 }
