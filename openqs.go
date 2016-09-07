@@ -8,12 +8,14 @@ import (
 type QItem struct {
 	value    Node
 	priority Cost
+	t        int // 'timestamp' so that items added earlier have it lower
 }
 type Queue []*QItem
 
 type OpenQS struct {
-	set   map[interface{}]struct{}
-	queue Queue
+	set      map[interface{}]struct{}
+	queue    Queue
+	tcounter int
 }
 
 // pretty-print:
@@ -23,9 +25,17 @@ func (x *QItem) String() string {
 
 // heap.Interface impl
 
-func (q Queue) Len() int           { return len(q) }
-func (q Queue) Less(i, j int) bool { return q[i].priority < q[j].priority }
-func (q Queue) Swap(i, j int)      { q[i], q[j] = q[j], q[i] }
+func (q Queue) Len() int { return len(q) }
+
+func (q Queue) Less(i, j int) bool {
+	pri1, pri2 := q[i].priority, q[j].priority
+	if pri1 == pri2 {
+		return q[i].t < q[j].t
+	}
+	return pri1 < pri2
+}
+
+func (q Queue) Swap(i, j int) { q[i], q[j] = q[j], q[i] }
 
 func (q *Queue) Push(x interface{}) {
 	*q = append(*q, x.(*QItem))
@@ -44,10 +54,12 @@ func (q *Queue) Pop() interface{} {
 func (qs *OpenQS) Init() {
 	qs.queue = make(Queue, 0, 10)
 	qs.set = map[interface{}]struct{}{}
+	qs.tcounter = 0
 }
 
 func (qs *OpenQS) Add(v Node, priority Cost) {
-	heap.Push(&qs.queue, &QItem{v, priority})
+	qs.tcounter++
+	heap.Push(&qs.queue, &QItem{v, priority, qs.tcounter})
 	qs.set[v] = struct{}{}
 }
 
