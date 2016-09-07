@@ -183,9 +183,9 @@ def nb(s,x,y) -> List[Point]:
 def h(point1: Point, point2: Point) -> Distance:
     s1,x1,y1 = point1
     s2,x2,y2 = point2
-    from math import floor, sqrt
+    from math import floor, hypot
     assert s1==s2
-    return floor(sqrt((x2-x1)**2 + (y2-y1)**2))
+    return floor(hypot((x2-x1), (y2-y1)))
 
 def h_drived(drive, n1, n2):
     return mvcost('space',drive)*h(n1,n2)
