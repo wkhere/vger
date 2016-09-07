@@ -84,10 +84,15 @@ func BenchmarkNbs(b *testing.B) {
 	}
 }
 
-func offExampleAstar() {
+func ExampleAstar() {
+	// The result here is different than for Py ver and a bit slalom
+	// (but still valid of course!). Looks like the heap is built differently
+	// for when there are many equal priorities.
+	// There's an idea to put some logic into the algorithm so it prefers
+	// paths "straight" as long as possible.
 	fmt.Print(astarWellKnownPath())
 	// Output:
-	// [{enioar 2 2} {enioar 3 3} {enioar 4 4} {enioar 5 4} {enioar 6 4} {enioar 7 4} {enioar 8 4} {enioar 9 4} {enioar 10 4} {enioar 11 4} {enioar 12 4} {enioar 13 4} {enioar 14 5} {enioar 15 6} {enioar 16 7} {enioar 17 6} {enioar 18 7} {enioar 19 6} {enioar 20 7}]
+	// [{enioar 2 2} {enioar 3 3} {enioar 4 4} {enioar 5 4} {enioar 6 4} {enioar 7 5} {enioar 8 4} {enioar 9 5} {enioar 10 4} {enioar 11 4} {enioar 12 4} {enioar 13 4} {enioar 14 5} {enioar 15 6} {enioar 16 7} {enioar 17 6} {enioar 18 7} {enioar 19 7} {enioar 20 7}]
 }
 
 func BenchmarkAstar(b *testing.B) {
