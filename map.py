@@ -264,4 +264,9 @@ def astar(env, node0: Point, goal: Point) -> List[Point]:
             openq.add(y, fy)
 
 
-if __name__ == '__main__': print(run())
+def str_gostyle(items):
+        return '[%s]' % ' '.join(
+            ['{%s %d %d}' %(s,x,y) for s,x,y in items]
+        )
+
+if __name__ == '__main__': print(str_gostyle(run()))

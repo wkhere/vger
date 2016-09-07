@@ -10,6 +10,9 @@ goresult:
 gotiming:
 	go test -bench=. -benchmem	
 
+gopy: go pytest
+	zsh -c 'diff -u <(./vger) <(python3 map.py)'
+
 pyall: pytypes pytest pytiming
 
 pyresult:
