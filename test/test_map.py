@@ -17,7 +17,7 @@ def test_basic():
      ('enioar', 14, 5),
      ('enioar', 15, 6),
      ('enioar', 16, 7),
-     ('enioar', 17, 6),
+     ('enioar', 17, 7),
      ('enioar', 18, 7),
-     ('enioar', 19, 6),
+     ('enioar', 19, 7),
      ('enioar', 20, 7)]

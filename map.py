@@ -167,14 +167,14 @@ def nb(s,x,y) -> List[Point]:
         try:
             if envdata[n] != 'block': ns.append(n)
         except KeyError: pass
-    test(-1,-1)
-    test( 0,-1)
-    test(+1,-1)
-    test(+1, 0)
-    test(+1,+1)
-    test( 0,+1)
-    test(-1,+1)
     test(-1, 0)
+    test(+1, 0)
+    test( 0,-1)
+    test( 0,+1)
+    test(-1,-1)
+    test(+1,+1)
+    test(-1,+1)
+    test(+1,-1)
     return ns
 
 
@@ -207,13 +207,15 @@ from heapq import heappush, heappop
 
 class PriQueue:
     def __init__(self, initial_vp: Tuple[Point, Distance]) -> None:
+        self.t = 0
         self.s = set()  # type: Set[Point]
-        self.q = []     # type: List[Tuple[Distance, Point]]
+        self.q = []     # type: List[Tuple[Tuple[Distance,int], Point]]
         self.add(*initial_vp)
 
     def add(self, v: Point, pri: Distance) -> None:
+        self.t += 1
         self.s.add(v)
-        heappush(self.q, (pri, v))
+        heappush(self.q, ((pri, self.t), v))
 
     def pop(self) -> Point:
         while True:
