@@ -130,7 +130,7 @@ func hAbstract(p1, p2 Coord) Cost {
 	}
 	dx := p2.X - p1.X
 	dy := p2.Y - p1.Y
-	return Cost(math.Sqrt(float64(dx*dx) + float64(dy*dy)))
+	return Cost(math.Floor(math.Sqrt(float64(dx*dx) + float64(dy*dy))))
 }
 
 func (e Env) H(n1, n2 Node) Cost {

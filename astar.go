@@ -1,6 +1,6 @@
 package main
 
-type Cost float64
+type Cost int
 type Node interface{}
 
 type GraphConfig interface {

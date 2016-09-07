@@ -185,7 +185,7 @@ def h(point1: Point, point2: Point) -> Distance:
     s2,x2,y2 = point2
     from math import floor, sqrt
     assert s1==s2
-    return sqrt((x2-x1)**2 + (y2-y1)**2)
+    return floor(sqrt((x2-x1)**2 + (y2-y1)**2))
 
 def h_drived(drive, n1, n2):
     return mvcost('space',drive)*h(n1,n2)
