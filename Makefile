@@ -1,8 +1,11 @@
 go:
 	go fmt
 	go build
-	./vger
 	go test -cover
+
+goresult:
+	go build
+	./vger
 
 gotiming:
 	go test -bench=. -benchmem	
