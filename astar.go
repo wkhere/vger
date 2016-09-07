@@ -19,14 +19,17 @@ func Astar(config GraphConfig, node0, goal Node) (path []Node) {
 	openq.Add(node0, f0)
 	path = nil
 
-	var consPath func(node Node)
-	consPath = func(node Node) {
-		// todo: return reversed path & avoid recursion - but benchmark first
-		parent, ok := parents[node]
-		if ok {
-			consPath(parent)
-			path = append(path, node)
+	consPath := func(node Node) {
+		for {
+			parent, ok := parents[node]
+			if ok {
+				path = append(path, node)
+				node = parent
+			} else {
+				break
+			}
 		}
+		reverse(path)
 	}
 
 	for openq.Len() > 0 {
@@ -56,4 +59,10 @@ func Astar(config GraphConfig, node0, goal Node) (path []Node) {
 		}
 	}
 	return
+}
+
+func reverse(path []Node) {
+	for i, j := 0, len(path)-1; i < j; i, j = i+1, j-1 {
+		path[i], path[j] = path[j], path[i]
+	}
 }
