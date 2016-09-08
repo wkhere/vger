@@ -46,8 +46,8 @@ func BenchmarkOpenqOps(b *testing.B) {
 func TestEnvIsComplete(t *testing.T) {
 	sector := Enioar
 	bbox := envbbox[sector]
-	for x := 0; x <= bbox.w; x++ {
-		for y := 0; y <= bbox.h; y++ {
+	for x := 0; x <= bbox.maxX; x++ {
+		for y := 0; y <= bbox.maxY; y++ {
 			_, ok := envdata[Coord{sector, x, y}]
 			if !ok {
 				t.Errorf("no key for (%s,%d,%d)", sector, x, y)
@@ -107,8 +107,8 @@ func ExampleMoreAstar() {
 func (c Coord) Generate(rand *rand.Rand, size int) reflect.Value {
 	c.Sector = Enioar
 	bbox := envbbox[c.Sector]
-	c.X = rand.Intn(bbox.w + 1)
-	c.Y = rand.Intn(bbox.h + 1)
+	c.X = rand.Intn(bbox.maxX + 1)
+	c.Y = rand.Intn(bbox.maxY + 1)
 	return reflect.ValueOf(c)
 }
 

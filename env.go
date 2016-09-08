@@ -39,7 +39,7 @@ func (sector Sector) String() string {
 // 	return fmt.Sprintf("%v", *pt)
 // }
 
-type bbox struct{ w, h int }
+type bbox struct{ maxX, maxY int }
 
 type tile uint8
 
