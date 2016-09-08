@@ -3,17 +3,17 @@ package main
 type Cost int
 type Node interface{}
 
-type GraphConfig interface {
+type Graph interface {
 	Nbs(Node) []Node
 	Dist(n1, n2 Node) Cost
 	H(n1, n2 Node) Cost
 }
 
-func Astar(config GraphConfig, node0, goal Node) (path []Node) {
+func Astar(graph Graph, node0, goal Node) (path []Node) {
 	closedset := map[Node]struct{}{}
 	parents := map[Node]Node{}
 	g := map[Node]Cost{node0: 0}
-	f0 := config.H(node0, goal)
+	f0 := graph.H(node0, goal)
 	openq := new(OpenQS)
 	openq.Init()
 	openq.Add(node0, f0)
@@ -28,12 +28,12 @@ func Astar(config GraphConfig, node0, goal Node) (path []Node) {
 
 		closedset[x] = struct{}{}
 
-		for _, y := range config.Nbs(x) {
+		for _, y := range graph.Nbs(x) {
 			if _, ok := closedset[y]; ok {
 				continue
 			}
 
-			est_g := g[x] + config.Dist(x, y)
+			est_g := g[x] + graph.Dist(x, y)
 
 			if openq.Contains(y) && est_g >= g[y] {
 				continue
@@ -41,7 +41,7 @@ func Astar(config GraphConfig, node0, goal Node) (path []Node) {
 
 			parents[y] = x
 			g[y] = est_g
-			fy := config.H(y, goal) + est_g
+			fy := graph.H(y, goal) + est_g
 			openq.Add(y, fy)
 		}
 	}
