@@ -5,13 +5,13 @@ go:
 
 goresult:
 	go build
-	./vger
+	./vger -well
 
 gotiming:
 	go test -bench=. -benchmem	
 
 gopy: go pytest
-	zsh -c 'diff -u <(./vger) <(python3 map.py)'
+	zsh -c 'diff -u <(./vger -well) <(python3 map.py)'
 
 pyall: pytypes pytest pytiming
 
