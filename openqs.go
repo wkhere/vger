@@ -11,7 +11,7 @@ type queue []*qitem
 
 type OpenQS struct {
 	q        queue
-	s        map[interface{}]struct{}
+	s        map[Node]struct{}
 	tcounter int
 }
 
@@ -45,7 +45,7 @@ func (q *queue) Pop() interface{} {
 
 func (qs *OpenQS) Init() {
 	qs.q = make(queue, 0, 10)
-	qs.s = map[interface{}]struct{}{}
+	qs.s = map[Node]struct{}{}
 	qs.tcounter = 0
 }
 
