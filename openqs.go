@@ -1,9 +1,6 @@
 package main
 
-import (
-	"container/heap"
-	"fmt"
-)
+import "container/heap"
 
 type QItem struct {
 	value    Node
@@ -16,11 +13,6 @@ type OpenQS struct {
 	set      map[interface{}]struct{}
 	queue    Queue
 	tcounter int
-}
-
-// pretty-print:
-func (x *QItem) String() string {
-	return fmt.Sprintf("%v", *x)
 }
 
 // heap.Interface impl
