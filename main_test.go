@@ -44,7 +44,7 @@ func BenchmarkOpenqOps(b *testing.B) {
 }
 
 func TestEnvIsComplete(t *testing.T) {
-	sector := "enioar"
+	sector := Enioar
 	bbox := envbbox[sector]
 	for x := 0; x <= bbox.w; x++ {
 		for y := 0; y <= bbox.h; y++ {
@@ -59,7 +59,7 @@ func TestEnvIsComplete(t *testing.T) {
 func ExampleNbs() {
 	e := Env{Ion}
 	p := func(x, y int) {
-		fmt.Println(e.Nbs(Coord{"enioar", x, y}))
+		fmt.Println(e.Nbs(Coord{Enioar, x, y}))
 	}
 	p(0, 0)
 	p(0, 12)
@@ -86,7 +86,7 @@ func ExampleNbs() {
 
 func BenchmarkNbs(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		Env{Ion}.Nbs(Coord{"enioar", 10, 10})
+		Env{Ion}.Nbs(Coord{Enioar, 10, 10})
 	}
 }
 
@@ -98,14 +98,14 @@ func ExampleAstar() {
 
 func ExampleMoreAstar() {
 	env := Env{Ion}
-	fmt.Println(Astar(env, Coord{"enioar", 4, 12}, Coord{"enioar", 5, 3}))
+	fmt.Println(Astar(env, Coord{Enioar, 4, 12}, Coord{Enioar, 5, 3}))
 	// Output:
 	// [{enioar 4 11} {enioar 5 10} {enioar 5 9} {enioar 5 8} {enioar 6 7} {enioar 7 6} {enioar 7 5} {enioar 6 4} {enioar 5 3}]
 }
 
 // generator for quick.Check:
 func (c Coord) Generate(rand *rand.Rand, size int) reflect.Value {
-	c.Sector = "enioar"
+	c.Sector = Enioar
 	bbox := envbbox[c.Sector]
 	c.X = rand.Intn(bbox.w + 1)
 	c.Y = rand.Intn(bbox.h + 1)

@@ -24,8 +24,14 @@ type Env struct {
 }
 
 type Coord struct {
-	Sector string
+	Sector Sector
 	X, Y   int
+}
+
+type Sector uint
+
+func (sector Sector) String() string {
+	return sectorNames[sector]
 }
 
 // goodie for pretty-printing the array of ptrs:
@@ -51,17 +57,18 @@ func mvcost(tile tile, drive Drive) Cost {
 	return Cost(int(tile) - int(drive))
 }
 
-var envbbox map[string]bbox
+var envbbox []bbox
 var envdata map[Coord]tile
 var envmemo map[Node][]Node
+var sectorNames []string
 
 type r struct{ c1, c2 int } // internal struct for env definition
 
-func envbb(sector string, w, h int) {
+func envbb(sector Sector, w, h int) {
 	envbbox[sector] = bbox{w, h}
 }
 
-func env(sector string, v1, v2 interface{}, tile tile) {
+func env(sector Sector, v1, v2 interface{}, tile tile) {
 	switch v1.(type) {
 	case int:
 		x := v1.(int)
