@@ -10,6 +10,8 @@ import (
 	"testing/quick"
 )
 
+var e = Env{Ion}
+
 func TestMain(m *testing.M) {
 	flag.Parse()
 	MakeEnv()
@@ -57,7 +59,6 @@ func TestEnvIsComplete(t *testing.T) {
 }
 
 func ExampleNbs() {
-	e := Env{Ion}
 	p := func(x, y int) {
 		fmt.Println(e.Nbs(Coord{Enioar, x, y}))
 	}
@@ -86,7 +87,7 @@ func ExampleNbs() {
 
 func BenchmarkNbs(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		Env{Ion}.Nbs(Coord{Enioar, 10, 10})
+		e.Nbs(Coord{Enioar, 10, 10})
 	}
 }
 
@@ -97,8 +98,7 @@ func ExampleAstar() {
 }
 
 func ExampleMoreAstar() {
-	env := Env{Ion}
-	fmt.Println(Astar(env, Coord{Enioar, 4, 12}, Coord{Enioar, 5, 3}))
+	fmt.Println(Astar(e, Coord{Enioar, 4, 12}, Coord{Enioar, 5, 3}))
 	// Output:
 	// [{Enioar 4 11} {Enioar 5 10} {Enioar 5 9} {Enioar 5 8} {Enioar 6 7} {Enioar 7 6} {Enioar 7 5} {Enioar 6 4} {Enioar 5 3}]
 }
@@ -113,16 +113,15 @@ func (c Coord) Generate(rand *rand.Rand, size int) reflect.Value {
 }
 
 func TestPathsAreStraight(t *testing.T) {
-	env := Env{Ion}
 	f := func(p0 Coord) bool {
 		if envdata[p0] == Space {
 			defer func() {
 				recover() // this relies on default bool = false
 			}()
-			checkY(p0, Astar(env, p0, findStraightX(p0, +1)))
-			checkY(p0, Astar(env, p0, findStraightX(p0, -1)))
-			checkX(p0, Astar(env, p0, findStraightY(p0, +1)))
-			checkX(p0, Astar(env, p0, findStraightY(p0, -1)))
+			checkY(p0, Astar(e, p0, findStraightX(p0, +1)))
+			checkY(p0, Astar(e, p0, findStraightX(p0, -1)))
+			checkX(p0, Astar(e, p0, findStraightY(p0, +1)))
+			checkX(p0, Astar(e, p0, findStraightY(p0, -1)))
 		}
 		return true
 	}
