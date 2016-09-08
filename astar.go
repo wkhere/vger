@@ -19,23 +19,10 @@ func Astar(config GraphConfig, node0, goal Node) (path []Node) {
 	openq.Add(node0, f0)
 	path = nil
 
-	consPath := func(node Node) {
-		for {
-			parent, ok := parents[node]
-			if ok {
-				path = append(path, node)
-				node = parent
-			} else {
-				break
-			}
-		}
-		reverse(path)
-	}
-
 	for openq.Len() > 0 {
 		x := openq.Pop()
 		if x == goal {
-			consPath(goal)
+			consPath(goal, parents, &path)
 			return path
 		}
 
@@ -59,6 +46,19 @@ func Astar(config GraphConfig, node0, goal Node) (path []Node) {
 		}
 	}
 	return
+}
+
+func consPath(node Node, parents map[Node]Node, path *[]Node) {
+	for {
+		parent, ok := parents[node]
+		if ok {
+			*path = append(*path, node)
+			node = parent
+		} else {
+			break
+		}
+	}
+	reverse(*path)
 }
 
 func reverse(path []Node) {
