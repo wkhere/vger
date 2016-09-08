@@ -2,24 +2,24 @@ package main
 
 import "container/heap"
 
-type QItem struct {
+type qitem struct {
 	value    Node
 	priority Cost
 	t        int // 'timestamp' so that items added earlier have it lower
 }
-type Queue []*QItem
+type queue []*qitem
 
 type OpenQS struct {
-	set      map[interface{}]struct{}
-	queue    Queue
+	q        queue
+	s        map[interface{}]struct{}
 	tcounter int
 }
 
 // heap.Interface impl
 
-func (q Queue) Len() int { return len(q) }
+func (q queue) Len() int { return len(q) }
 
-func (q Queue) Less(i, j int) bool {
+func (q queue) Less(i, j int) bool {
 	pri1, pri2 := q[i].priority, q[j].priority
 	if pri1 == pri2 {
 		return q[i].t < q[j].t
@@ -27,13 +27,13 @@ func (q Queue) Less(i, j int) bool {
 	return pri1 < pri2
 }
 
-func (q Queue) Swap(i, j int) { q[i], q[j] = q[j], q[i] }
+func (q queue) Swap(i, j int) { q[i], q[j] = q[j], q[i] }
 
-func (q *Queue) Push(x interface{}) {
-	*q = append(*q, x.(*QItem))
+func (q *queue) Push(x interface{}) {
+	*q = append(*q, x.(*qitem))
 }
 
-func (q *Queue) Pop() interface{} {
+func (q *queue) Pop() interface{} {
 	old := *q
 	n := len(old)
 	x := old[n-1]
@@ -44,30 +44,30 @@ func (q *Queue) Pop() interface{} {
 // external API for OpenQS
 
 func (qs *OpenQS) Init() {
-	qs.queue = make(Queue, 0, 10)
-	qs.set = map[interface{}]struct{}{}
+	qs.q = make(queue, 0, 10)
+	qs.s = map[interface{}]struct{}{}
 	qs.tcounter = 0
 }
 
 func (qs *OpenQS) Add(v Node, priority Cost) {
 	qs.tcounter++
-	heap.Push(&qs.queue, &QItem{v, priority, qs.tcounter})
-	qs.set[v] = struct{}{}
+	heap.Push(&qs.q, &qitem{v, priority, qs.tcounter})
+	qs.s[v] = struct{}{}
 }
 
 func (qs *OpenQS) Pop() Node {
 	for {
-		v := heap.Pop(&qs.queue).(*QItem).value
-		if _, ok := qs.set[v]; ok {
-			delete(qs.set, v)
+		v := heap.Pop(&qs.q).(*qitem).value
+		if _, ok := qs.s[v]; ok {
+			delete(qs.s, v)
 			return v
 		}
 	}
 }
 
-func (qs *OpenQS) Len() int { return len(qs.set) }
+func (qs *OpenQS) Len() int { return len(qs.s) }
 
 func (qs *OpenQS) Contains(v Node) bool {
-	_, ok := qs.set[v]
+	_, ok := qs.s[v]
 	return ok
 }
