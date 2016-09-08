@@ -28,7 +28,7 @@ def speed(drive):
     return drive if isinstance(drive,int) else speed_base[drive]
 
 
-enioar = 'enioar'
+enioar = 'Enioar'
 block = 'block'
 space = 'space'
 nebula = 'nebula'
@@ -200,7 +200,7 @@ def astar_drived(drive, node0, goal):
                  node0, goal)
 
 def run():
-    return astar_drived('ion', ('enioar',1,1), ('enioar',20,7))
+    return astar_drived('ion', (enioar,1,1), (enioar,20,7))
 
 
 from heapq import heappush, heappop

@@ -76,12 +76,12 @@ func ExampleNbs() {
 	// []
 	// []
 	// []
-	// [{enioar 2 1} {enioar 1 2} {enioar 2 2} {enioar 0 2}]
-	// [{enioar 16 6} {enioar 17 7} {enioar 16 5} {enioar 18 7} {enioar 16 7}]
-	// [{enioar 11 12} {enioar 10 11} {enioar 9 11} {enioar 11 11}]
-	// [{enioar 19 8} {enioar 20 7} {enioar 19 7}]
+	// [{Enioar 2 1} {Enioar 1 2} {Enioar 2 2} {Enioar 0 2}]
+	// [{Enioar 16 6} {Enioar 17 7} {Enioar 16 5} {Enioar 18 7} {Enioar 16 7}]
+	// [{Enioar 11 12} {Enioar 10 11} {Enioar 9 11} {Enioar 11 11}]
+	// [{Enioar 19 8} {Enioar 20 7} {Enioar 19 7}]
 	// []
-	// [{enioar 17 7} {enioar 19 7} {enioar 17 6} {enioar 19 8} {enioar 17 8} {enioar 19 6}]
+	// [{Enioar 17 7} {Enioar 19 7} {Enioar 17 6} {Enioar 19 8} {Enioar 17 8} {Enioar 19 6}]
 }
 
 func BenchmarkNbs(b *testing.B) {
@@ -93,14 +93,14 @@ func BenchmarkNbs(b *testing.B) {
 func ExampleAstar() {
 	fmt.Print(astarWellKnownPath())
 	// Output:
-	// [{enioar 2 2} {enioar 3 3} {enioar 4 4} {enioar 5 4} {enioar 6 4} {enioar 7 4} {enioar 8 4} {enioar 9 4} {enioar 10 4} {enioar 11 4} {enioar 12 4} {enioar 13 4} {enioar 14 5} {enioar 15 6} {enioar 16 7} {enioar 17 7} {enioar 18 7} {enioar 19 7} {enioar 20 7}]
+	// [{Enioar 2 2} {Enioar 3 3} {Enioar 4 4} {Enioar 5 4} {Enioar 6 4} {Enioar 7 4} {Enioar 8 4} {Enioar 9 4} {Enioar 10 4} {Enioar 11 4} {Enioar 12 4} {Enioar 13 4} {Enioar 14 5} {Enioar 15 6} {Enioar 16 7} {Enioar 17 7} {Enioar 18 7} {Enioar 19 7} {Enioar 20 7}]
 }
 
 func ExampleMoreAstar() {
 	env := Env{Ion}
 	fmt.Println(Astar(env, Coord{Enioar, 4, 12}, Coord{Enioar, 5, 3}))
 	// Output:
-	// [{enioar 4 11} {enioar 5 10} {enioar 5 9} {enioar 5 8} {enioar 6 7} {enioar 7 6} {enioar 7 5} {enioar 6 4} {enioar 5 3}]
+	// [{Enioar 4 11} {Enioar 5 10} {Enioar 5 9} {Enioar 5 8} {Enioar 6 7} {Enioar 7 6} {Enioar 7 5} {Enioar 6 4} {Enioar 5 3}]
 }
 
 // generator for quick.Check:

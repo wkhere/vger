@@ -12,7 +12,7 @@ func MakeEnv() {
 	envmemo = map[Node][]Node{}
 	sectorNames = make([]string, lastSector)
 
-	sectorNames[Enioar] = "enioar"
+	sectorNames[Enioar] = "Enioar"
 
 	envbb(Enioar, 20, 12)
 	env(Enioar, r{7, 9}, r{0, 1}, Energy)
