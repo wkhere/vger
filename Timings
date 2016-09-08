@@ -1,3 +1,6 @@
+Node: these are all old. Some of the code has been changed
+(like python version which uses 'fancy' heap now).
+
 enioar 1,1 to 20.7:
 
   mostly-linear scanning on node deletion from heap:
