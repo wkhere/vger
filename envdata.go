@@ -3,16 +3,16 @@ package main
 const (
 	_ Sector = iota
 	Enioar
-	lastSector
+	endSectors
 )
 
 func MakeEnv() {
-	envbbox = make([]bbox, lastSector)
+	sectors = make([]string, endSectors)
+	envbbox = make([]bbox, endSectors)
 	envdata = map[Coord]tile{}
 	envmemo = map[Node][]Node{}
-	sectorNames = make([]string, lastSector)
 
-	sectorNames[Enioar] = "Enioar"
+	sectors[Enioar] = "Enioar"
 
 	envbb(Enioar, 20, 12)
 	env(Enioar, r{7, 9}, r{0, 1}, Energy)

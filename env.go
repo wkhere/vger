@@ -31,7 +31,7 @@ type Coord struct {
 type Sector uint
 
 func (sector Sector) String() string {
-	return sectorNames[sector]
+	return sectors[sector]
 }
 
 // goodie for pretty-printing the array of ptrs:
@@ -60,7 +60,7 @@ func mvcost(tile tile, drive Drive) Cost {
 var envbbox []bbox
 var envdata map[Coord]tile
 var envmemo map[Node][]Node
-var sectorNames []string
+var sectors []string
 
 type r struct{ c1, c2 int } // internal struct for env definition
 
