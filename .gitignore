@@ -1,4 +1,8 @@
 /vger
+/vger.test
+/vger_*
+/cprof.*
+/cov.*
 .rebar/
 *.pyc
 *.pys
