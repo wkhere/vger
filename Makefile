@@ -12,7 +12,7 @@ gotiming:
 
 goprof:
 	go test -cpuprofile=cprof.now -bench=Astar 
-	echo weblist|go tool pprof cprof.now
+	@echo now run: go tool pprof cprof.now
 
 gopy: go pytest
 	zsh -c 'diff -u <(./vger -well) <(python3 map.py)'
