@@ -1,5 +1,23 @@
-Node: these are all old. Some of the code has been changed
+Most interesting are Go timings because this is fastest impl.
+
+------------
+
+After going to 64bits on the same hardware (ray laptop),
+there is a small speedup:
+
+BenchmarkOpenqOps-4   	 1000000	      2004 ns/op	     704 B/op	      16 allocs/op
+BenchmarkNbs-4        	20000000	        96.5 ns/op	      32 B/op	       1 allocs/op
+BenchmarkAstar-4      	    5000	    375232 ns/op	   55397 B/op	     250 allocs/op
+
+Previous record was 385µs/op after switching to sector uint constants
+(commit ffcf062).
+
+Some of previous experiments are noted in the commit logs.
+
+-----------
+Timings below are old. Some of the code has been changed
 (like python version which uses 'fancy' heap now).
+Keeping just for the record.
 
 enioar 1,1 to 20.7:
 
