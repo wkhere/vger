@@ -69,24 +69,20 @@ func envbb(sector Sector, w, h int) {
 }
 
 func env(sector Sector, v1, v2 interface{}, tile tile) {
-	switch v1.(type) {
+	switch x := v1.(type) {
 	case int:
-		x := v1.(int)
-		switch v2.(type) {
+		switch y := v2.(type) {
 		case int:
-			y := v2.(int)
 			envdata[Coord{sector, x, y}] = tile
 		case r:
-			ry := v2.(r)
-			for yi := ry.c1; yi <= ry.c2; yi++ {
+			for yi := y.c1; yi <= y.c2; yi++ {
 				env(sector, x, yi, tile)
 			}
 		default:
 			panic(fmt.Sprintf("unknown y type: `%v` %T", v2, v2))
 		}
 	case r:
-		rx := v1.(r)
-		for xi := rx.c1; xi <= rx.c2; xi++ {
+		for xi := x.c1; xi <= x.c2; xi++ {
 			env(sector, xi, v2, tile)
 		}
 	default:
