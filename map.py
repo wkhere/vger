@@ -207,7 +207,7 @@ from heapq import heappush, heappop
 
 class PriQueue:
     def __init__(self, initial_vp: Tuple[Point, Distance]) -> None:
-        self.t = 0
+        self.t = 0  # 'timestamp' so that items added earlier have it lower
         self.s = set()  # type: Set[Point]
         self.q = []     # type: List[Tuple[Tuple[Distance,int], Point]]
         self.add(*initial_vp)
