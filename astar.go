@@ -35,14 +35,24 @@ func Astar(graph Graph, node0, goal Node) (path []Node) {
 
 			est_g := g[x] + graph.Dist(x, y)
 
-			if openq.Contains(y) && est_g >= g[y] {
-				continue
+			var updating bool
+
+			if openq.Contains(y) {
+				if est_g < g[y] {
+					updating = true
+				} else {
+					continue
+				}
 			}
 
 			parents[y] = x
 			g[y] = est_g
 			fy := graph.H(y, goal) + est_g
-			openq.Add(y, fy)
+			if updating {
+				openq.Update(y, fy)
+			} else {
+				openq.Add(y, fy)
+			}
 		}
 	}
 	return

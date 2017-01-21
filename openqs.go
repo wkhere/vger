@@ -5,13 +5,14 @@ import "container/heap"
 type qitem struct {
 	value    Node
 	priority Cost
+	index    int
 	t        int // 'timestamp' so that items added earlier have it lower
 }
 type queue []*qitem
 
 type OpenQS struct {
 	q        queue
-	s        map[Node]struct{}
+	m        map[Node]*qitem
 	tcounter int
 }
 
@@ -27,10 +28,16 @@ func (q queue) Less(i, j int) bool {
 	return pri1 < pri2
 }
 
-func (q queue) Swap(i, j int) { q[i], q[j] = q[j], q[i] }
+func (q queue) Swap(i, j int) {
+	q[i], q[j] = q[j], q[i]
+	q[i].index = i
+	q[j].index = j
+}
 
-func (q *queue) Push(x interface{}) {
-	*q = append(*q, x.(*qitem))
+func (q *queue) Push(obj interface{}) {
+	x := obj.(*qitem)
+	x.index = len(*q)
+	*q = append(*q, x)
 }
 
 func (q *queue) Pop() interface{} {
@@ -45,29 +52,36 @@ func (q *queue) Pop() interface{} {
 
 func (qs *OpenQS) Init() {
 	qs.q = make(queue, 0, 10)
-	qs.s = map[Node]struct{}{}
-	qs.tcounter = 0
+	qs.m = make(map[Node]*qitem)
 }
 
 func (qs *OpenQS) Add(v Node, priority Cost) {
 	qs.tcounter++
-	heap.Push(&qs.q, &qitem{v, priority, qs.tcounter})
-	qs.s[v] = struct{}{}
+	x := &qitem{v, priority, -1, qs.tcounter}
+	heap.Push(&qs.q, x)
+	qs.m[v] = x
+}
+
+func (qs *OpenQS) Update(v Node, newPriority Cost) {
+	x, ok := qs.m[v]
+	if !ok {
+		panic(v)
+	}
+	qs.tcounter++
+	x.priority = newPriority
+	x.t = qs.tcounter
+	heap.Fix(&qs.q, x.index)
 }
 
 func (qs *OpenQS) Pop() Node {
-	for {
-		v := heap.Pop(&qs.q).(*qitem).value
-		if _, ok := qs.s[v]; ok {
-			delete(qs.s, v)
-			return v
-		}
-	}
+	v := heap.Pop(&qs.q).(*qitem).value
+	delete(qs.m, v)
+	return v
 }
 
-func (qs *OpenQS) Len() int { return len(qs.s) }
+func (qs *OpenQS) Len() int { return len(qs.m) }
 
 func (qs *OpenQS) Contains(v Node) bool {
-	_, ok := qs.s[v]
+	_, ok := qs.m[v]
 	return ok
 }
