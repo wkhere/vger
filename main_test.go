@@ -24,7 +24,8 @@ func openqExample() []Node {
 	openq.Add("foo", 10)
 	openq.Add("five", 5)
 	openq.Add("five2", 5)
-	openq.Update("foo", 3)
+	item, _ := openq.Item("foo")
+	openq.Update(item, 3)
 	openq.Add("two", 2)
 	res := make([]Node, 0, 4)
 	for openq.Len() > 0 {

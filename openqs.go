@@ -62,11 +62,7 @@ func (qs *OpenQS) Add(v Node, priority Cost) {
 	qs.m[v] = x
 }
 
-func (qs *OpenQS) Update(v Node, newPriority Cost) {
-	x, ok := qs.m[v]
-	if !ok {
-		panic(v)
-	}
+func (qs *OpenQS) Update(x *qitem, newPriority Cost) {
 	qs.tcounter++
 	x.priority = newPriority
 	x.t = qs.tcounter
@@ -81,7 +77,7 @@ func (qs *OpenQS) Pop() Node {
 
 func (qs *OpenQS) Len() int { return len(qs.m) }
 
-func (qs *OpenQS) Contains(v Node) bool {
-	_, ok := qs.m[v]
-	return ok
+func (qs *OpenQS) Item(v Node) (*qitem, bool) {
+	x, ok := qs.m[v]
+	return x, ok
 }

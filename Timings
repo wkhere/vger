@@ -3,11 +3,11 @@ Most interesting are Go timings because this is fastest impl.
 
 ------------
 
-After using embedded index in OpenQS:
+After using embedded index in OpenQS and some optimizations:
 
-BenchmarkOpenqOps-4   	 1000000	      1744 ns/op	     720 B/op	      14 allocs/op
-BenchmarkNbs-4        	20000000	        95.0 ns/op	      32 B/op	       1 allocs/op
-BenchmarkAstar-4      	    5000	    358110 ns/op	   57174 B/op	     212 allocs/op
+BenchmarkOpenqOps-4      1000000          1718 ns/op         704 B/op         13 allocs/op
+BenchmarkNbs-4          20000000           100 ns/op          32 B/op          1 allocs/op
+BenchmarkAstar-4            5000        357060 ns/op       57184 B/op        212 allocs/op
 
 ------------
 
