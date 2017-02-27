@@ -3,6 +3,14 @@ Most interesting are Go timings because this is fastest impl.
 
 ------------
 
+After Go 1.7 -> 1.8 switch:
+
+BenchmarkOpenqOps-4   	 1000000	      1674 ns/op	     704 B/op	      13 allocs/op
+BenchmarkNbs-4        	20000000	        96.1 ns/op	      32 B/op	       1 allocs/op
+BenchmarkAstar-4      	    5000	    343625 ns/op	   58956 B/op	     212 allocs/op
+
+------------
+
 After using embedded index in OpenQS and some optimizations:
 
 BenchmarkOpenqOps-4      1000000          1718 ns/op         704 B/op         13 allocs/op
