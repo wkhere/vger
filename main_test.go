@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"testing"
 	"testing/quick"
+
+	"github.com/wkhere/astar"
 )
 
 var e = Env{Ion}
@@ -16,34 +18,6 @@ func TestMain(m *testing.M) {
 	flag.Parse()
 	MakeEnv()
 	os.Exit(m.Run())
-}
-
-func openqExample() []Node {
-	openq := new(OpenQS)
-	openq.Init()
-	openq.Add("foo", 10)
-	openq.Add("five", 5)
-	openq.Add("five2", 5)
-	item, _ := openq.Item("foo")
-	openq.Update(item, 3)
-	openq.Add("two", 2)
-	res := make([]Node, 0, 4)
-	for openq.Len() > 0 {
-		v := openq.Pop()
-		res = append(res, v)
-	}
-	return res
-}
-
-func ExampleOpenqOps() {
-	fmt.Print(openqExample())
-	// Output: [two foo five five2]
-}
-
-func BenchmarkOpenqOps(b *testing.B) {
-	for n := 0; n < b.N; n++ {
-		openqExample()
-	}
 }
 
 func TestEnvIsComplete(t *testing.T) {
@@ -99,7 +73,7 @@ func ExampleAstar() {
 }
 
 func ExampleMoreAstar() {
-	fmt.Println(Astar(e, Coord{Enioar, 4, 12}, Coord{Enioar, 5, 3}))
+	fmt.Println(astar.Astar(e, Coord{Enioar, 4, 12}, Coord{Enioar, 5, 3}))
 	// Output:
 	// [{Enioar 4 11} {Enioar 5 10} {Enioar 5 9} {Enioar 5 8} {Enioar 6 7} {Enioar 7 6} {Enioar 7 5} {Enioar 6 4} {Enioar 5 3}]
 }
@@ -119,10 +93,10 @@ func TestPathsAreStraight(t *testing.T) {
 			defer func() {
 				recover() // this relies on default bool = false
 			}()
-			checkY(p0, Astar(e, p0, findStraightX(p0, +1)))
-			checkY(p0, Astar(e, p0, findStraightX(p0, -1)))
-			checkX(p0, Astar(e, p0, findStraightY(p0, +1)))
-			checkX(p0, Astar(e, p0, findStraightY(p0, -1)))
+			checkY(p0, astar.Astar(e, p0, findStraightX(p0, +1)))
+			checkY(p0, astar.Astar(e, p0, findStraightX(p0, -1)))
+			checkX(p0, astar.Astar(e, p0, findStraightY(p0, +1)))
+			checkX(p0, astar.Astar(e, p0, findStraightY(p0, -1)))
 		}
 		return true
 	}
@@ -163,7 +137,7 @@ func findStraightY(p0 Coord, dy int) Coord {
 	return p
 }
 
-func checkY(p0 Coord, path []Node) {
+func checkY(p0 Coord, path []astar.Node) {
 	for _, p := range path {
 		if p.(Coord).Y != p0.Y {
 			panic("Y differs")
@@ -171,7 +145,7 @@ func checkY(p0 Coord, path []Node) {
 	}
 }
 
-func checkX(p0 Coord, path []Node) {
+func checkX(p0 Coord, path []astar.Node) {
 	for _, p := range path {
 		if p.(Coord).X != p0.X {
 			panic("X differs")

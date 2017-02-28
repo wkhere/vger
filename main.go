@@ -3,10 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
+
+	"github.com/wkhere/astar"
 )
 
-func astarWellKnownPath() []Node {
-	return Astar(Env{Ion}, Coord{Enioar, 1, 1}, Coord{Enioar, 20, 7})
+func astarWellKnownPath() []astar.Node {
+	return astar.Astar(Env{Ion}, Coord{Enioar, 1, 1}, Coord{Enioar, 20, 7})
 }
 
 func main() {

@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"math"
+
+	"github.com/wkhere/astar"
 )
 
 type Drive uint8
@@ -53,13 +55,13 @@ const (
 	Exotic   tile = 36
 )
 
-func mvcost(tile tile, drive Drive) Cost {
-	return Cost(int(tile) - int(drive))
+func mvcost(tile tile, drive Drive) astar.Cost {
+	return astar.Cost(int(tile) - int(drive))
 }
 
 var envbbox []bbox
 var envdata map[Coord]tile
-var envmemo map[Node][]Node
+var envmemo map[astar.Node][]astar.Node
 var sectors []string
 
 type r struct{ c1, c2 int } // internal struct for env definition
@@ -90,7 +92,7 @@ func env(sector Sector, v1, v2 interface{}, tile tile) {
 	}
 }
 
-func (e Env) Nbs(node Node) []Node {
+func (e Env) Nbs(node astar.Node) []astar.Node {
 	if memo, ok := envmemo[node]; ok {
 		return memo
 	}
@@ -104,7 +106,7 @@ func (e Env) Nbs(node Node) []Node {
 		return nil
 	}
 
-	nbs := make([]Node, 0, 8)
+	nbs := make([]astar.Node, 0, 8)
 
 	add := func(dx, dy int) {
 		newpoint := Coord{point.Sector, point.X + dx, point.Y + dy}
@@ -127,20 +129,20 @@ func (e Env) Nbs(node Node) []Node {
 	return nbs
 }
 
-func hAbstract(p1, p2 Coord) Cost {
+func hAbstract(p1, p2 Coord) astar.Cost {
 	if p1.Sector != p2.Sector {
 		panic("H() across sectors not implemented")
 	}
 	dx := p2.X - p1.X
 	dy := p2.Y - p1.Y
-	return Cost(math.Floor(math.Hypot(float64(dx), float64(dy))))
+	return astar.Cost(math.Floor(math.Hypot(float64(dx), float64(dy))))
 }
 
-func (e Env) H(n1, n2 Node) Cost {
+func (e Env) H(n1, n2 astar.Node) astar.Cost {
 	scale := mvcost(Space, e.Drive)
 	return scale * hAbstract(n1.(Coord), n2.(Coord))
 }
 
-func (e Env) Dist(n1, n2 Node) Cost {
+func (e Env) Dist(n1, n2 astar.Node) astar.Cost {
 	return mvcost(envdata[n1.(Coord)], e.Drive)
 }

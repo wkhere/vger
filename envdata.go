@@ -1,5 +1,7 @@
 package main
 
+import "github.com/wkhere/astar"
+
 const (
 	_ Sector = iota
 	Enioar
@@ -10,7 +12,7 @@ func MakeEnv() {
 	sectors = make([]string, endSectors)
 	envbbox = make([]bbox, endSectors)
 	envdata = map[Coord]tile{}
-	envmemo = map[Node][]Node{}
+	envmemo = map[astar.Node][]astar.Node{}
 
 	sectors[Enioar] = "Enioar"
 

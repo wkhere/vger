@@ -8,7 +8,7 @@ goresult:
 	./vger -well
 
 gotiming:
-	go test -bench=. -benchmem	
+	go test -bench=. -benchmem github.com/wkhere/astar .
 
 goprof:
 	go test -cpuprofile=cprof.now -bench=Astar 
