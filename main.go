@@ -8,7 +8,7 @@ import (
 )
 
 func astarWellKnownPath() []astar.Node {
-	return astar.Astar(Env{Ion}, Coord{Enioar, 1, 1}, Coord{Enioar, 20, 7})
+	return astar.Astar(Coord{Enioar, 1, 1}, Coord{Enioar, 20, 7})
 }
 
 func main() {

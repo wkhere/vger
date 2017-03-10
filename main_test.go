@@ -12,8 +12,6 @@ import (
 	"github.com/wkhere/astar"
 )
 
-var e = Env{Ion}
-
 func TestMain(m *testing.M) {
 	flag.Parse()
 	MakeEnv()
@@ -35,7 +33,7 @@ func TestEnvIsComplete(t *testing.T) {
 
 func ExampleNbs() {
 	p := func(x, y int) {
-		fmt.Println(e.Nbs(Coord{Enioar, x, y}))
+		fmt.Println(Coord{Enioar, x, y}.Nbs())
 	}
 	p(0, 0)
 	p(0, 12)
@@ -62,7 +60,7 @@ func ExampleNbs() {
 
 func BenchmarkNbs(b *testing.B) {
 	for n := 0; n < b.N; n++ {
-		e.Nbs(Coord{Enioar, 10, 10})
+		Coord{Enioar, 10, 10}.Nbs()
 	}
 }
 
@@ -73,7 +71,7 @@ func ExampleAstar() {
 }
 
 func ExampleMoreAstar() {
-	fmt.Println(astar.Astar(e, Coord{Enioar, 4, 12}, Coord{Enioar, 5, 3}))
+	fmt.Println(astar.Astar(Coord{Enioar, 4, 12}, Coord{Enioar, 5, 3}))
 	// Output:
 	// [{Enioar 4 11} {Enioar 5 10} {Enioar 5 9} {Enioar 5 8} {Enioar 6 7} {Enioar 7 6} {Enioar 7 5} {Enioar 6 4} {Enioar 5 3}]
 }
@@ -93,10 +91,10 @@ func TestPathsAreStraight(t *testing.T) {
 			defer func() {
 				recover() // this relies on default bool = false
 			}()
-			checkY(p0, astar.Astar(e, p0, findStraightX(p0, +1)))
-			checkY(p0, astar.Astar(e, p0, findStraightX(p0, -1)))
-			checkX(p0, astar.Astar(e, p0, findStraightY(p0, +1)))
-			checkX(p0, astar.Astar(e, p0, findStraightY(p0, -1)))
+			checkY(p0, astar.Astar(p0, findStraightX(p0, +1)))
+			checkY(p0, astar.Astar(p0, findStraightX(p0, -1)))
+			checkX(p0, astar.Astar(p0, findStraightY(p0, +1)))
+			checkX(p0, astar.Astar(p0, findStraightY(p0, -1)))
 		}
 		return true
 	}

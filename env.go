@@ -21,8 +21,9 @@ const (
 	EIp     Drive = 6
 )
 
-type Env struct {
+type ShipLocation struct {
 	Drive
+	Coord
 }
 
 type Coord struct {
@@ -92,12 +93,20 @@ func env(sector Sector, v1, v2 interface{}, tile tile) {
 	}
 }
 
-func (e Env) Nbs(node astar.Node) []astar.Node {
-	if memo, ok := envmemo[node]; ok {
+func hAbstract(p1, p2 Coord) astar.Cost {
+	if p1.Sector != p2.Sector {
+		panic("H() across sectors not implemented")
+	}
+	dx := p2.X - p1.X
+	dy := p2.Y - p1.Y
+	return astar.Cost(math.Floor(math.Hypot(float64(dx), float64(dy))))
+}
+
+func (point Coord) Nbs() []astar.Node {
+	if memo, ok := envmemo[point]; ok {
 		return memo
 	}
 
-	point := node.(Coord)
 	tile, ok := envdata[point]
 	if !ok {
 		panic(fmt.Sprintf("missing env at %v", point))
@@ -125,24 +134,15 @@ func (e Env) Nbs(node astar.Node) []astar.Node {
 	add(-1, +1)
 	add(+1, -1)
 
-	envmemo[node] = nbs
+	envmemo[point] = nbs
 	return nbs
 }
 
-func hAbstract(p1, p2 Coord) astar.Cost {
-	if p1.Sector != p2.Sector {
-		panic("H() across sectors not implemented")
-	}
-	dx := p2.X - p1.X
-	dy := p2.Y - p1.Y
-	return astar.Cost(math.Floor(math.Hypot(float64(dx), float64(dy))))
+func (p1 Coord) DistanceTo(n2 astar.Node) astar.Cost {
+	return mvcost(envdata[p1], Ion) // FIX hardcoded drive
 }
 
-func (e Env) H(n1, n2 astar.Node) astar.Cost {
-	scale := mvcost(Space, e.Drive)
-	return scale * hAbstract(n1.(Coord), n2.(Coord))
-}
-
-func (e Env) Dist(n1, n2 astar.Node) astar.Cost {
-	return mvcost(envdata[n1.(Coord)], e.Drive)
+func (p1 Coord) EstimateTo(n2 astar.Node) astar.Cost {
+	scale := mvcost(Space, Ion) // FIX hardcoded drive
+	return scale * hAbstract(p1, n2.(Coord))
 }
