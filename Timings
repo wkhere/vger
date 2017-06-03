@@ -1,6 +1,15 @@
 Most interesting are Go timings because this is fastest impl.
 
 
+
+-----------
+
+After moving Astar to ext. lib & switching to Node interface:
+
+BenchmarkOpenQS-4  	 1000000	      1672 ns/op	     704 B/op	      13 allocs/op
+BenchmarkNbs-4     	30000000	        56.1 ns/op	       0 B/op	       0 allocs/op
+BenchmarkAstar-4   	    5000	    346037 ns/op	   58984 B/op	     211 allocs/op
+
 ------------
 
 After Go 1.7 -> 1.8 switch:
