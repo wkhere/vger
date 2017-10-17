@@ -1,5 +1,6 @@
 go:
 	go fmt
+	go build
 	go test -cover
 
 goresult:
