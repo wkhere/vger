@@ -1,6 +1,13 @@
 Most interesting are Go timings because this is fastest impl.
 
 
+-----------
+
+After Go 1.8 -> 1.9 switch:
+
+BenchmarkOpenQS-4    1000000	      1464 ns/op	     640 B/op	       9 allocs/op
+BenchmarkNbs-4     	30000000	        55.9 ns/op	       0 B/op	       0 allocs/op
+BenchmarkAstar-4   	    5000	    346681 ns/op	   60139 B/op	     205 allocs/op
 
 -----------
 
